@@ -1,0 +1,2727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astrocade — Google Search Ads Funnel Analysis | February 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --bg: #f4f6f9;
+  --sidebar-bg: #1a1e2e;
+  --sidebar-text: #b0b8c8;
+  --sidebar-active: #ffffff;
+  --card-bg: #ffffff;
+  --text: #1e293b;
+  --text-secondary: #64748b;
+  --blue: #3b82f6;
+  --blue-dark: #1e40af;
+  --blue-light: #dbeafe;
+  --green: #10b981;
+  --green-light: #d1fae5;
+  --green-dark: #065f46;
+  --red: #ef4444;
+  --red-light: #fee2e2;
+  --red-dark: #991b1b;
+  --orange: #f97316;
+  --orange-light: #ffedd5;
+  --yellow: #eab308;
+  --yellow-light: #fef9c3;
+  --amber: #f59e0b;
+  --amber-light: #fef3c7;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-700: #334155;
+  --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+  --radius: 10px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+/* Sidebar */
+.sidebar {
+  position: fixed; top: 0; left: 0; width: 240px; height: 100vh;
+  background: var(--sidebar-bg); color: var(--sidebar-text);
+  padding: 24px 0; overflow-y: auto; z-index: 100;
+  display: flex; flex-direction: column;
+}
+.sidebar-brand { padding: 0 20px 24px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 12px; }
+.sidebar-brand h2 { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: .3px; }
+.sidebar-brand p { font-size: 12px; color: var(--sidebar-text); margin-top: 2px; }
+.sidebar nav { flex: 1; }
+.sidebar nav a {
+  display: block; padding: 9px 20px; font-size: 13px; color: var(--sidebar-text);
+  text-decoration: none; transition: all .15s; border-left: 3px solid transparent;
+}
+.sidebar nav a:hover { color: #fff; background: rgba(255,255,255,.05); }
+.sidebar nav a.active { color: var(--sidebar-active); border-left-color: var(--blue); background: rgba(59,130,246,.1); font-weight: 600; }
+
+/* Sticky bar */
+.sticky-bar {
+  position: fixed; top: 0; left: 240px; right: 0; height: 48px; z-index: 90;
+  background: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; gap: 32px;
+  font-size: 13px; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.sticky-bar .sep { color: rgba(255,255,255,.25); }
+.sticky-bar .val { font-weight: 700; }
+.sticky-bar .pct { color: var(--blue); font-weight: 600; margin-left: 4px; font-size: 12px; }
+
+/* Main */
+.main { margin-left: 240px; padding: 68px 40px 60px; max-width: 1200px; }
+.main > section { margin-bottom: 48px; }
+.main .page-content > section { margin-bottom: 48px; }
+
+/* Header */
+.page-header { margin-bottom: 40px; }
+.page-header h1 { font-size: 28px; font-weight: 800; color: var(--text); }
+.page-header .subtitle { font-size: 15px; color: var(--text-secondary); margin-top: 4px; }
+
+/* KPI cards */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
+.kpi-card {
+  background: var(--card-bg); border-radius: var(--radius); padding: 18px 20px;
+  box-shadow: var(--shadow); border-top: 3px solid var(--blue);
+}
+.kpi-card .label { font-size: 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+.kpi-card .value { font-size: 26px; font-weight: 800; color: var(--text); margin: 4px 0 2px; }
+.kpi-card .pct { font-size: 13px; color: var(--blue); font-weight: 600; }
+
+/* Cards */
+.card {
+  background: var(--card-bg); border-radius: var(--radius); padding: 28px;
+  box-shadow: var(--shadow); margin-bottom: 24px;
+}
+.card h3 { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+
+/* Working well */
+.working-well { background: var(--green-light); border: 1px solid #a7f3d0; border-radius: var(--radius); padding: 28px; margin-bottom: 28px; }
+.working-well h3 { color: var(--green-dark); font-size: 18px; margin-bottom: 16px; }
+.ww-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ww-item {
+  background: #fff; border-radius: 8px; padding: 16px 18px; border-left: 4px solid var(--green);
+}
+.ww-item .ww-stat { font-size: 20px; font-weight: 800; color: var(--green-dark); }
+.ww-item .ww-desc { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+
+/* Issues */
+.issues-section { margin-bottom: 28px; }
+.issues-section h3 { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--red-dark); }
+.issue-card {
+  background: var(--card-bg); border-radius: var(--radius); padding: 20px 24px;
+  box-shadow: var(--shadow); margin-bottom: 14px; position: relative; overflow: hidden;
+}
+.issue-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+}
+.issue-card.p0::before { background: var(--red); }
+.issue-card.p1::before { background: var(--orange); }
+.issue-card.p2::before { background: var(--yellow); }
+.issue-badge {
+  display: inline-block; font-size: 11px; font-weight: 800; padding: 3px 10px;
+  border-radius: 4px; letter-spacing: .5px; margin-bottom: 8px;
+}
+.issue-badge.p0 { background: var(--red-light); color: var(--red-dark); }
+.issue-badge.p1 { background: var(--orange-light); color: #9a3412; }
+.issue-badge.p2 { background: var(--yellow-light); color: #854d0e; }
+.issue-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.issue-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.issue-card .impact { margin-top: 8px; font-weight: 600; color: var(--text); font-size: 13px; }
+
+/* Methodology */
+.meth-step {
+  background: var(--blue-light); border: 1px solid #93c5fd; border-radius: 8px;
+  padding: 20px 24px; margin-bottom: 14px;
+}
+.meth-step .step-num {
+  display: inline-block; background: var(--blue); color: #fff; width: 28px; height: 28px;
+  border-radius: 50%; text-align: center; line-height: 28px; font-size: 13px; font-weight: 700;
+  margin-right: 10px; vertical-align: middle;
+}
+.meth-step h4 { display: inline; font-size: 15px; font-weight: 700; vertical-align: middle; }
+.meth-step .step-body { margin-top: 10px; font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+.code-block {
+  background: #1e293b; color: #e2e8f0; border-radius: 6px; padding: 14px 18px;
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12.5px; line-height: 1.8;
+  overflow-x: auto; margin-top: 10px; white-space: pre;
+}
+
+/* Funnel visual */
+.funnel-bar-container { margin-bottom: 12px; }
+.funnel-bar-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+.funnel-bar-label .fname { font-weight: 600; }
+.funnel-bar-label .fvals { color: var(--text-secondary); }
+.funnel-bar-outer { background: var(--gray-200); border-radius: 6px; height: 32px; position: relative; overflow: hidden; }
+.funnel-bar-inner { height: 100%; border-radius: 6px; transition: width .6s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-size: 12px; font-weight: 700; color: #fff; min-width: 40px; }
+
+/* Scorecard */
+.scorecard-table { width: 100%; border-collapse: collapse; }
+.scorecard-table th, .scorecard-table td { padding: 10px 14px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--gray-200); }
+.scorecard-table th { background: var(--gray-100); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-secondary); }
+.grade-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 4px; font-weight: 800; font-size: 13px;
+}
+.grade-a { background: var(--green-light); color: var(--green-dark); }
+.grade-b { background: #dbeafe; color: var(--blue-dark); }
+.grade-c { background: var(--amber-light); color: #92400e; }
+.grade-d { background: var(--orange-light); color: #9a3412; }
+.grade-f { background: var(--red-light); color: var(--red-dark); }
+
+/* Deep dive groups */
+.group-label {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px;
+  padding: 6px 14px; border-radius: 4px; display: inline-block; margin-bottom: 12px;
+}
+.group-engagement { background: var(--green-light); color: var(--green-dark); }
+.group-conversion { background: var(--amber-light); color: #92400e; }
+.group-retention { background: var(--red-light); color: var(--red-dark); }
+
+.transition-row {
+  display: grid; grid-template-columns: 200px 1fr 100px 100px 120px; align-items: center;
+  padding: 12px 16px; border-bottom: 1px solid var(--gray-200); font-size: 13px;
+}
+.transition-row:last-child { border-bottom: none; }
+.transition-row .t-name { font-weight: 600; }
+.transition-row .t-bar-wrap { padding: 0 16px; }
+.transition-row .t-bar { height: 20px; border-radius: 4px; }
+
+/* Charts */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.chart-wrap { background: var(--card-bg); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.chart-wrap h4 { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.chart-wrap canvas { width: 100% !important; }
+
+/* Timing */
+.timing-table { width: 100%; border-collapse: collapse; }
+.timing-table th, .timing-table td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid var(--gray-200); text-align: left; }
+.timing-table th { background: var(--gray-100); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-secondary); }
+
+/* Recommendations */
+.rec-card {
+  background: var(--card-bg); border-radius: var(--radius); padding: 20px 24px;
+  box-shadow: var(--shadow); margin-bottom: 14px; border-left: 4px solid var(--blue);
+}
+.rec-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.rec-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+/* Bottleneck */
+.bottleneck-card {
+  background: var(--card-bg); border-radius: var(--radius); padding: 24px 28px;
+  box-shadow: var(--shadow-md); margin-bottom: 20px; border: 1px solid var(--gray-200);
+}
+.bottleneck-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+.bottleneck-stat { font-size: 36px; font-weight: 800; }
+
+/* Findings */
+.finding-item { padding: 14px 0; border-bottom: 1px solid var(--gray-200); }
+.finding-item:last-child { border-bottom: none; }
+.finding-num { display: inline-block; background: var(--blue); color: #fff; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; margin-right: 8px; }
+
+/* Print */
+@media print {
+  .sidebar, .sticky-bar { display: none; }
+  .main { margin-left: 0; padding: 20px; }
+  .card, .working-well, .issue-card, .meth-step, .chart-wrap, .bottleneck-card { break-inside: avoid; }
+}
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .sticky-bar { left: 0; }
+  .main { margin-left: 0; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .ww-grid { grid-template-columns: 1fr; }
+  .chart-grid { grid-template-columns: 1fr; }
+}
+.page-tabs { padding: 0 12px 16px; display: flex; gap: 6px; }
+.page-tab {
+  flex: 1; padding: 8px 4px; border: none; border-radius: 6px; cursor: pointer;
+  font-size: 12px; font-weight: 600; transition: all .15s;
+  background: rgba(255,255,255,.08); color: var(--sidebar-text);
+}
+.page-tab:hover { background: rgba(255,255,255,.12); }
+.page-tab.active { background: var(--blue); color: #fff; }
+.page-content { display: none; }
+.page-content.active { display: block; }
+.source-table { width: 100%; border-collapse: collapse; }
+.source-table th, .source-table td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid var(--gray-200); text-align: left; }
+.source-table th { background: var(--gray-100); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-secondary); }
+.callout-card {
+  background: var(--card-bg); border-radius: var(--radius); padding: 20px 24px;
+  box-shadow: var(--shadow); margin-bottom: 14px; border-left: 5px solid var(--blue);
+}
+.callout-card.waste { border-left-color: var(--red); }
+.callout-card.hero { border-left-color: var(--green); }
+.callout-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.callout-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.comparison-table { width: 100%; border-collapse: collapse; }
+.comparison-table th, .comparison-table td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid var(--gray-200); text-align: left; }
+.comparison-table th { background: var(--gray-100); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-secondary); }
+.comparison-table .better { color: var(--green); font-weight: 700; }
+.comparison-table .worse { color: var(--red); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <h2>Astrocade</h2>
+    <p>Creator Funnel Analysis</p>
+  </div>
+  <div class="page-tabs">
+    <button class="page-tab active" onclick="switchPage('ads')">Ads Analysis</button>
+    <button class="page-tab" onclick="switchPage('noads')">Excluding Ads</button>
+    <button class="page-tab" onclick="switchPage('combined')">Combined Analysis</button>
+  </div>
+  <nav id="nav-ads">
+    <a href="#executive-summary" class="active">Executive Summary</a>
+    <a href="#methodology">Analysis Methodology</a>
+    <a href="#funnel-viz">Funnel Visualization</a>
+    <a href="#step-deep-dive">Step-by-Step Deep Dive</a>
+    <a href="#bottlenecks">Bottlenecks Deep Dive</a>
+    <a href="#daily-trends">Daily Trends</a>
+    <a href="#timing">Timing Analysis</a>
+    <a href="#scorecard">Funnel Health Scorecard</a>
+    <a href="#device-country">Device &amp; Country Insights</a>
+    <a href="#findings">Findings &amp; Recommendations</a>
+  </nav>
+  <nav id="nav-noads" style="display:none;">
+    <a href="#noads-executive-summary" class="active">Executive Summary</a>
+    <a href="#noads-methodology">Analysis Methodology</a>
+    <a href="#noads-funnel-viz">Funnel Visualization</a>
+    <a href="#noads-step-deep-dive">Step-by-Step Deep Dive</a>
+    <a href="#noads-source-analysis">Source Analysis</a>
+    <a href="#noads-daily-trends">Daily Trends</a>
+    <a href="#noads-comparison">Ads vs No-Ads Comparison</a>
+    <a href="#noads-scorecard">Funnel Health Scorecard</a>
+  </nav>
+  <nav id="nav-combined" style="display:none;">
+    <a href="#combined-executive-summary" class="active">Executive Summary</a>
+    <a href="#combined-gap-analysis">Gap Analysis</a>
+    <a href="#combined-funnel-viz">Funnel Visualization</a>
+    <a href="#combined-zones">Funnel Zones</a>
+    <a href="#combined-findings">Findings &amp; Solutions</a>
+  </nav>
+</aside>
+
+<!-- Sticky Bar -->
+<div class="sticky-bar" id="sticky-ads">
+  <span><span class="val">18,840</span> visitors</span>
+  <span class="sep">|</span>
+  <span><span class="val">7,321</span> sign-ups <span class="pct">(38.86%)</span></span>
+  <span class="sep">|</span>
+  <span><span class="val">661</span> wish_10 <span class="pct">(3.51%)</span></span>
+</div>
+<div class="sticky-bar" id="sticky-noads" style="display:none;">
+  <span><span class="val">32,896</span> visitors</span>
+  <span class="sep">|</span>
+  <span><span class="val">4,092</span> sign-ups <span class="pct">(12.44%)</span></span>
+  <span class="sep">|</span>
+  <span><span class="val">575</span> wish_10 <span class="pct">(1.75%)</span></span>
+</div>
+<div class="sticky-bar" id="sticky-combined" style="display:none;">
+  <span><span class="val">28,998</span> visitors (ads + organic)</span>
+  <span class="sep">|</span>
+  <span><span class="val">10,616</span> sign-ups <span class="pct">(36.61%)</span></span>
+  <span class="sep">|</span>
+  <span><span class="val">1,137</span> wish_10 <span class="pct">(3.92%)</span></span>
+</div>
+
+<div class="main">
+  <div class="page-content active" id="page-ads">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Astrocade &mdash; Google Search Ads Funnel Analysis</h1>
+    <p class="subtitle">February 2026 &middot; 2 Google Search Ad Campaigns &middot; /create Landing Page &middot; 10-Step Funnel</p>
+  </div>
+
+  <!-- ============ 1. EXECUTIVE SUMMARY ============ -->
+  <section id="executive-summary">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Executive Summary</h2>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="label">Total Page Views</div>
+        <div class="value">18,840</div>
+        <div class="pct">100%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">User Input</div>
+        <div class="value">15,990</div>
+        <div class="pct">84.87%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">AI Response</div>
+        <div class="value">14,971</div>
+        <div class="pct">79.46%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Sign-up Complete</div>
+        <div class="value">7,321</div>
+        <div class="pct">38.86%</div>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="label">1st Wish</div>
+        <div class="value">7,223</div>
+        <div class="pct">38.34%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">2nd Wish</div>
+        <div class="value">3,890</div>
+        <div class="pct">20.65%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">5 Wishes</div>
+        <div class="value">1,513</div>
+        <div class="pct">8.03%</div>
+      </div>
+      <div class="kpi-card" style="border-top-color: var(--green);">
+        <div class="label">10 Wishes (E2E)</div>
+        <div class="value">661</div>
+        <div class="pct" style="color: var(--green);">3.51%</div>
+      </div>
+    </div>
+
+    <!-- What's Working Well -->
+    <div class="working-well">
+      <h3>What's Working Well</h3>
+      <div class="ww-grid">
+        <div class="ww-item">
+          <div class="ww-stat">98.66% Sign-up &rarr; First Wish</div>
+          <div class="ww-desc">Seamless handoff. Virtually everyone who signs up immediately creates their first game.</div>
+        </div>
+        <div class="ww-item">
+          <div class="ww-stat">93.63% Message &rarr; AI Response</div>
+          <div class="ww-desc">The AI reliably responds to user input. Very low technical failure rate.</div>
+        </div>
+        <div class="ww-item">
+          <div class="ww-stat">3.51% E2E Conversion</div>
+          <div class="ww-desc">Strong overall conversion rate for paid search acquisition. Every 100 ad clicks produces ~3.5 creators who reach 10 wishes.</div>
+        </div>
+        <div class="ww-item">
+          <div class="ww-stat">~44 seconds landing to AI response</div>
+          <div class="ww-desc">Users move through the brainstorm flow quickly. The top of funnel is fast and frictionless.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top 3 Issues -->
+    <div class="issues-section">
+      <h3>Top 3 Issues</h3>
+
+      <div class="issue-card p0">
+        <span class="issue-badge p0">P0 &mdash; CRITICAL</span>
+        <h4>Wish Retention Collapse</h4>
+        <p>Of 7,223 users who submit their first wish, only 1,513 reach 5 wishes (20.94%) and only 661 reach 10 (9.15%). This is the #1 growth lever. 5,710 users create one game and stop. Improving wish1&rarr;wish5 from 20.94% to 35% would add ~380 wish_10 (+57% lift). Either the first game result disappoints, there's no guidance to continue, or users don't see value in making more.</p>
+        <p class="impact">Impact: +380 wish_10 (+57% lift) if wish1&rarr;wish5 improves to 35%</p>
+      </div>
+
+      <div class="issue-card p1">
+        <span class="issue-badge p1">P1 &mdash; HIGH</span>
+        <h4>Sign-up Modal Abandonment (33.40% drop)</h4>
+        <p>3,672 users see the sign-up modal but don't complete. Median decision time: 25 seconds &mdash; a snap judgment. Suggests friction in sign-up form (too many fields, no social auth, trust concerns). Improving from 66.60% to 80% would add ~130 wish_10 (+20% lift).</p>
+        <p class="impact">Impact: +130 wish_10 (+20% lift) if sign-up rate improves to 80%</p>
+      </div>
+
+      <div class="issue-card p2">
+        <span class="issue-badge p2">P2 &mdash; MEDIUM</span>
+        <h4>AI Response &rarr; Sign-up Modal Drop (26.57% drop)</h4>
+        <p>3,978 users get an AI response but never see the sign-up modal. Median gap: 26 seconds. Users are reading/engaging with the AI but leaving before the modal triggers. Possible causes: AI response doesn't excite enough to continue, unclear next steps, or modal trigger point comes too late.</p>
+        <p class="impact">Impact: Recovering even 10% of these 3,978 users could add ~35 wish_10</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. ANALYSIS METHODOLOGY ============ -->
+  <section id="methodology">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Analysis Methodology</h2>
+
+    <div class="meth-step">
+      <span class="step-num">1</span>
+      <h4>Funnel Structure Definition</h4>
+      <div class="step-body">
+        The funnel consists of 10 sequential steps, from initial page view on <code>/create</code> through the brainstorm experience, sign-up conversion, and wish-based retention milestones. Data sourced from 2 Google Search Ad campaigns running in February 2026 (Feb 1&ndash;28). The brainstorm_ai_response step was included to capture AI system reliability as a distinct conversion point.
+      </div>
+    </div>
+
+    <div class="meth-step">
+      <span class="step-num">2</span>
+      <h4>Step-over-Step Conversion Rates</h4>
+      <div class="step-body">
+        Each step's conversion rate is calculated as: <strong>rate = (step N count) / (step N-1 count) &times; 100</strong>
+        <div class="code-block">Page &rarr; Session:      18,454 / 18,840 = 97.95%
+Session &rarr; Message:    15,990 / 18,454 = 86.66%
+Message &rarr; AI Resp:    14,971 / 15,990 = 93.63%
+AI Resp &rarr; Modal:      10,993 / 14,971 = 73.43%
+Modal &rarr; SignUp:        7,321 / 10,993 = 66.60%
+SignUp &rarr; Wish1:        7,223 /  7,321 = 98.66%
+Wish1 &rarr; Wish2:        3,890 /  7,223 = 53.86%
+Wish2 &rarr; wish5:        1,513 /  3,890 = 38.89%
+wish5 &rarr; wish10:         661 /  1,513 = 43.69%
+
+End-to-End:                   661 / 18,840 =  3.51%</div>
+      </div>
+    </div>
+
+    <div class="meth-step">
+      <span class="step-num">3</span>
+      <h4>Drop-off Ranking (by % Drop)</h4>
+      <div class="step-body">
+        Users lost at each step ranked by relative drop percentage:
+        <div class="code-block">Rank  Transition              Lost     % Drop
+  1.  Wish2 &rarr; wish5        2,377    61.11%
+  2.  wish5 &rarr; wish10         852    56.31%
+  3.  Wish1 &rarr; Wish2        3,333    46.14%
+  4.  Modal &rarr; SignUp        3,672    33.40%
+  5.  AI Resp &rarr; Modal       3,978    26.57%
+  6.  Session &rarr; Message    2,464    13.35%
+  7.  Message &rarr; AI Resp    1,019     6.37%
+  8.  Page &rarr; Session          386     2.05%
+  9.  SignUp &rarr; Wish1           98     1.34%</div>
+      </div>
+    </div>
+
+    <div class="meth-step">
+      <span class="step-num">4</span>
+      <h4>Bottleneck Zone Identification</h4>
+      <div class="step-body">
+        Three bottleneck zones identified based on where the funnel narrows most sharply:
+        <br><br>
+        <strong>Zone A &mdash; Conversion Gauntlet (AI Response &rarr; Sign-up):</strong> Combined pass-through = 73.43% &times; 66.60% = 48.90%. Nearly half of engaged users are lost in these two steps.<br><br>
+        <strong>Zone B &mdash; Wish Retention Collapse (Wish1 &rarr; wish10):</strong> Only 661 / 7,223 = 9.15% of first-wish creators reach 10 wishes. Three consecutive low-conversion steps compound to massive attrition.<br><br>
+        <strong>Zone C &mdash; Session &rarr; Message (13.35% drop):</strong> 2,464 users start a brainstorm but never type a message. A meaningful but secondary loss point.
+      </div>
+    </div>
+
+    <div class="meth-step">
+      <span class="step-num">5</span>
+      <h4>Positive Signal Identification</h4>
+      <div class="step-body">
+        Steps with conversion rates above 90% are flagged as healthy:<br><br>
+        &bull; Page &rarr; Session: 97.95% &mdash; excellent landing page engagement<br>
+        &bull; Message &rarr; AI Response: 93.63% &mdash; reliable AI system performance<br>
+        &bull; SignUp &rarr; Wish1: 98.66% &mdash; near-perfect handoff to creation<br><br>
+        The E2E rate of 3.51% is strong for paid search acquisition funnels with this many steps.
+      </div>
+    </div>
+
+    <div class="meth-step">
+      <span class="step-num">6</span>
+      <h4>Time-Based Analysis</h4>
+      <div class="step-body">
+        Median times between steps used to understand user behavior pacing:
+        <div class="code-block">Landing &rarr; AI Response:  1s + 13s + 4s = 18s (fast brainstorm loop)
+Total to first wish:       18s + 26s + 25s + 0s = 69s (~1 min 9 sec)
+Wish1 &rarr; Wish2:         532s (~8 min 52 sec)
+Wish2 &rarr; wish5:          832s (~13 min 52 sec)
+wish5 &rarr; wish10:        1,363s (~22 min 43 sec)
+Total landing to wish_10:  ~2,821s (~47 min)</div>
+      </div>
+    </div>
+
+    <div class="meth-step">
+      <span class="step-num">7</span>
+      <h4>Daily Pattern Analysis</h4>
+      <div class="step-body">
+        28 days of data analyzed for weekday vs. weekend patterns and anomalies:<br><br>
+        &bull; <strong>Best day by volume:</strong> Feb 10 (940 page views, 31 wish_10)<br>
+        &bull; <strong>Worst day by volume:</strong> Feb 17 (426 page views, 8 wish_10)<br>
+        &bull; Weekend days (Feb 8-9, 15-16, 22-23) show mixed patterns &mdash; Saturday traffic often higher than Sunday<br>
+        &bull; Feb 16-17 saw a notable dip (504 and 426 PVs), possibly due to reduced ad spend or campaign adjustments<br>
+        &bull; Conversion rates remain relatively stable day-to-day, suggesting structural rather than temporal issues
+      </div>
+    </div>
+
+    <div class="meth-step">
+      <span class="step-num">8</span>
+      <h4>Improvement Projections</h4>
+      <div class="step-body">
+        Three scenarios modeled by adjusting key conversion rates while holding others constant:
+        <div class="code-block">Scenario A &mdash; Improve Sign-up Rate (66.60% &rarr; 80%):
+  New sign-ups = 10,993 &times; 0.80 = 8,794
+  Projected wish_10 = 661 &times; (8,794 / 7,321) &asymp; 794
+  Lift: +133 wish_10 (+20%)
+
+Scenario B &mdash; Improve Wish Retention:
+  Wish1 &rarr; Wish2: 53.86% &rarr; 65%
+  Wish2 &rarr; wish5: 38.89% &rarr; 50%
+  wish5 &rarr; wish10: 43.69% (hold)
+  New wish_10 = 7,223 &times; 0.65 &times; 0.50 &times; 0.4369 &asymp; 1,025
+  Lift: +364 wish_10 (+55%)
+
+Scenario C &mdash; Both A + B Combined:
+  New sign-ups = 8,794, same 98.66% to Wish1 = 8,676
+  8,676 &times; 0.65 &times; 0.50 &times; 0.4369 &asymp; 1,231
+  Lift: +570 wish_10 (+86%)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. FUNNEL VISUALIZATION ============ -->
+  <section id="funnel-viz">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Funnel Visualization</h2>
+
+    <div class="card">
+      <h3>Funnel Progression (% of Total Page Views)</h3>
+      <div id="funnel-bars"></div>
+    </div>
+
+    <div class="card">
+      <h3>Funnel Bar Chart</h3>
+      <canvas id="funnelBarChart" height="300"></canvas>
+    </div>
+  </section>
+
+  <!-- ============ 4. STEP-BY-STEP DEEP DIVE ============ -->
+  <section id="step-deep-dive">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Step-by-Step Deep Dive</h2>
+
+    <!-- Engagement -->
+    <div class="card">
+      <span class="group-label group-engagement">Engagement Zone &mdash; Page &rarr; AI Response</span>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">The top of funnel is healthy. Users arrive and move through the brainstorm flow quickly with minimal friction.</p>
+
+      <div class="transition-row" style="background: var(--gray-100); font-weight:700; font-size:12px; border-radius:6px 6px 0 0;">
+        <div>Transition</div><div>Conversion</div><div style="text-align:right">Rate</div><div style="text-align:right">Lost</div><div style="text-align:right">Median Time</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Page &rarr; Session</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:97.95%; background:var(--green);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--green);">97.95%</div>
+        <div style="text-align:right; color:var(--text-secondary);">386</div>
+        <div style="text-align:right">1s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Session &rarr; Message</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:86.66%; background:var(--blue);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--blue);">86.66%</div>
+        <div style="text-align:right; color:var(--text-secondary);">2,464</div>
+        <div style="text-align:right">13s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Message &rarr; AI Resp</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:93.63%; background:var(--green);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--green);">93.63%</div>
+        <div style="text-align:right; color:var(--text-secondary);">1,019</div>
+        <div style="text-align:right">4s</div>
+      </div>
+    </div>
+
+    <!-- Conversion -->
+    <div class="card">
+      <span class="group-label group-conversion">Conversion Zone &mdash; AI Response &rarr; 1st Wish</span>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">The gauntlet. Two consecutive steps with significant drop-off, followed by a near-perfect handoff to creation.</p>
+
+      <div class="transition-row" style="background: var(--gray-100); font-weight:700; font-size:12px; border-radius:6px 6px 0 0;">
+        <div>Transition</div><div>Conversion</div><div style="text-align:right">Rate</div><div style="text-align:right">Lost</div><div style="text-align:right">Median Time</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">AI Resp &rarr; Modal</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:73.43%; background:var(--amber);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--amber);">73.43%</div>
+        <div style="text-align:right; color:var(--text-secondary);">3,978</div>
+        <div style="text-align:right">26s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Modal &rarr; SignUp</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:66.60%; background:var(--orange);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--orange);">66.60%</div>
+        <div style="text-align:right; color:var(--text-secondary);">3,672</div>
+        <div style="text-align:right">25s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">SignUp &rarr; Wish1</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:98.66%; background:var(--green);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--green);">98.66%</div>
+        <div style="text-align:right; color:var(--text-secondary);">98</div>
+        <div style="text-align:right">0s</div>
+      </div>
+    </div>
+
+    <!-- Retention -->
+    <div class="card">
+      <span class="group-label group-retention">Retention Zone &mdash; Wish1 &rarr; wish10</span>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">The challenge. Three consecutive steps with poor conversion rates. This is where the majority of activated users are lost.</p>
+
+      <div class="transition-row" style="background: var(--gray-100); font-weight:700; font-size:12px; border-radius:6px 6px 0 0;">
+        <div>Transition</div><div>Conversion</div><div style="text-align:right">Rate</div><div style="text-align:right">Lost</div><div style="text-align:right">Median Time</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Wish1 &rarr; Wish2</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:53.86%; background:var(--orange);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--orange);">53.86%</div>
+        <div style="text-align:right; color:var(--text-secondary);">3,333</div>
+        <div style="text-align:right">8m 52s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Wish2 &rarr; wish5</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:38.89%; background:var(--red);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--red);">38.89%</div>
+        <div style="text-align:right; color:var(--text-secondary);">2,377</div>
+        <div style="text-align:right">13m 52s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">wish5 &rarr; wish10</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:43.69%; background:var(--orange);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--orange);">43.69%</div>
+        <div style="text-align:right; color:var(--text-secondary);">852</div>
+        <div style="text-align:right">22m 43s</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. BOTTLENECKS DEEP DIVE ============ -->
+  <section id="bottlenecks">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Bottlenecks Deep Dive</h2>
+
+    <div class="bottleneck-card">
+      <h4>Bottleneck 1: AI Response &rarr; Sign-up (The Conversion Gauntlet)</h4>
+      <div style="display:flex; gap:32px; align-items:center; margin:16px 0;">
+        <div>
+          <div class="bottleneck-stat" style="color:var(--amber);">48.90%</div>
+          <div style="font-size:13px; color:var(--text-secondary);">Combined pass-through rate</div>
+        </div>
+        <div>
+          <div class="bottleneck-stat" style="color:var(--red);">7,650</div>
+          <div style="font-size:13px; color:var(--text-secondary);">Total users lost (3,978 + 3,672)</div>
+        </div>
+      </div>
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">
+        The two-step sequence from AI Response &rarr; Sign-up Modal &rarr; Sign-up Complete has a combined pass-through of just 73.43% &times; 66.60% = <strong>48.90%</strong>. Of 14,971 users who receive an AI response, only 7,321 complete sign-up. This is the biggest absolute-volume loss zone in the funnel.
+        <br><br>
+        <strong>AI Response &rarr; Modal (26.57% drop):</strong> 3,978 users engage with the AI but leave before seeing the sign-up modal. The 26-second median gap suggests users are reading the AI response but not finding enough motivation to continue. The modal trigger may come too late, or the AI response may not clearly communicate next steps.
+        <br><br>
+        <strong>Modal &rarr; Sign-up (33.40% drop):</strong> 3,672 users see the modal but don't complete. The 25-second median decision time indicates a snap judgment &mdash; users quickly evaluate the sign-up form and leave. This points to UX friction: too many fields, missing social auth options, or insufficient trust signals.
+      </p>
+    </div>
+
+    <div class="bottleneck-card">
+      <h4>Bottleneck 2: Wish Retention (Wish1 &rarr; wish10)</h4>
+      <div style="display:flex; gap:32px; align-items:center; margin:16px 0;">
+        <div>
+          <div class="bottleneck-stat" style="color:var(--red);">9.15%</div>
+          <div style="font-size:13px; color:var(--text-secondary);">Wish1 &rarr; wish10 survival rate</div>
+        </div>
+        <div>
+          <div class="bottleneck-stat" style="color:var(--red);">6,562</div>
+          <div style="font-size:13px; color:var(--text-secondary);">Users lost between Wish1 and wish10</div>
+        </div>
+      </div>
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">
+        Of 7,223 users who create their first wish, only 661 reach 10 wishes &mdash; a <strong>9.15%</strong> survival rate. The three retention steps compound catastrophically:
+        <br><br>
+        <strong>Wish1 &rarr; Wish2 (53.86%):</strong> 3,333 users create one game and never return for a second. The 8m 52s median gap suggests users leave after seeing their first game result. If the result doesn't impress, there's no hook to bring them back.
+        <br><br>
+        <strong>Wish2 &rarr; wish5 (38.89%):</strong> The steepest relative drop. 2,377 users create 2 games but stop before 5. The 13m 52s gap shows engagement tails off quickly.
+        <br><br>
+        <strong>wish5 &rarr; wish10 (43.69%):</strong> 852 users who reach 5 wishes don't make it to 10. By this point, users have invested ~45 minutes. Those who leave may have exhausted their ideas or hit quality ceilings.
+        <br><br>
+        Combined: 53.86% &times; 38.89% &times; 43.69% = <strong>9.15%</strong>. This is the #1 growth lever for the business.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ 6. DAILY TRENDS ============ -->
+  <section id="daily-trends">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Daily Trends</h2>
+    <div class="chart-grid">
+      <div class="chart-wrap">
+        <h4>Daily Page Views &amp; Sessions</h4>
+        <canvas id="chartPVSessions" height="220"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>Daily Sign-ups &amp; 1st Wishes</h4>
+        <canvas id="chartSignups" height="220"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>Daily Wish Milestones (Wish2, wish5, wish10)</h4>
+        <canvas id="chartWishes" height="220"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>Daily E2E Conversion Rate (wish10 / PV)</h4>
+        <canvas id="chartE2E" height="220"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. TIMING ANALYSIS ============ -->
+  <section id="timing">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Timing Analysis</h2>
+    <div class="card">
+      <h3>Median Time Between Steps</h3>
+      <table class="timing-table">
+        <thead>
+          <tr><th>Transition</th><th>Median Time</th><th>Formatted</th><th>Interpretation</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Page &rarr; Session</td><td>1s</td><td>1 second</td><td>Instant engagement &mdash; brainstorm starts automatically on page load</td></tr>
+          <tr><td>Session &rarr; Message</td><td>13s</td><td>13 seconds</td><td>Users quickly type their first message into the brainstorm</td></tr>
+          <tr><td>Message &rarr; AI Response</td><td>4s</td><td>4 seconds</td><td>Fast AI processing time &mdash; good system performance</td></tr>
+          <tr><td>AI Response &rarr; Modal</td><td>26s</td><td>26 seconds</td><td>Users spend ~half a minute reading AI output before modal triggers</td></tr>
+          <tr><td>Modal &rarr; SignUp</td><td>25s</td><td>25 seconds</td><td>Quick decision &mdash; users either commit or abandon within seconds</td></tr>
+          <tr><td>SignUp &rarr; Wish1</td><td>0s</td><td>Instant</td><td>Automated transition &mdash; sign-up flows directly into first wish</td></tr>
+          <tr><td>Wish1 &rarr; Wish2</td><td>532s</td><td>8 min 52 sec</td><td>Significant pause &mdash; users evaluate first game before deciding to create another</td></tr>
+          <tr><td>Wish2 &rarr; wish5</td><td>832s</td><td>13 min 52 sec</td><td>Engagement stretches &mdash; users creating games at a slower pace</td></tr>
+          <tr><td>wish5 &rarr; wish10</td><td>1,363s</td><td>22 min 43 sec</td><td>Deep engagement &mdash; committed users spending substantial time</td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:24px;">
+        <h3>Median Time Between Steps</h3>
+        <canvas id="chartTimingMedian" height="300"></canvas>
+      </div>
+
+      <div style="margin-top:20px; padding:16px; background:var(--blue-light); border-radius:8px;">
+        <strong style="font-size:14px;">Key Timing Insights</strong>
+        <ul style="font-size:13px; color:var(--text-secondary); margin-top:8px; padding-left:20px; line-height:1.8;">
+          <li><strong>Landing to AI response:</strong> ~18 seconds (1s + 13s + 4s). Extremely fast top-of-funnel.</li>
+          <li><strong>Landing to first wish:</strong> ~69 seconds (~1 min 9 sec). Users go from ad click to creating their first game in just over a minute.</li>
+          <li><strong>Landing to wish_10:</strong> ~2,821 seconds (~47 minutes). Committed creators invest nearly an hour in the platform.</li>
+          <li><strong>The 25-second sign-up decision:</strong> This snap judgment window is where 33.40% of modal viewers drop off. Every field or friction point in this window costs conversions.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8. FUNNEL HEALTH SCORECARD ============ -->
+  <section id="scorecard">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Funnel Health Scorecard</h2>
+    <div class="card">
+      <table class="scorecard-table">
+        <thead>
+          <tr><th>Transition</th><th>Rate</th><th>Grade</th><th>Users Lost</th><th>% Lost</th><th>Assessment</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Page &rarr; Session</td><td style="font-weight:700">97.95%</td>
+            <td><span class="grade-badge grade-a">A+</span></td>
+            <td>386</td><td>2.05%</td><td>Excellent. Near-zero friction on page load.</td>
+          </tr>
+          <tr>
+            <td>Session &rarr; Message</td><td style="font-weight:700">86.66%</td>
+            <td><span class="grade-badge grade-b">B+</span></td>
+            <td>2,464</td><td>13.35%</td><td>Good but room to improve. 1 in 7 users don't engage.</td>
+          </tr>
+          <tr>
+            <td>Message &rarr; AI Response</td><td style="font-weight:700">93.63%</td>
+            <td><span class="grade-badge grade-a">A</span></td>
+            <td>1,019</td><td>6.37%</td><td>Strong AI reliability. Minimal technical failures.</td>
+          </tr>
+          <tr>
+            <td>AI Resp &rarr; Modal</td><td style="font-weight:700">73.43%</td>
+            <td><span class="grade-badge grade-c">C+</span></td>
+            <td>3,978</td><td>26.57%</td><td>Moderate. Over a quarter of engaged users leave.</td>
+          </tr>
+          <tr>
+            <td>Modal &rarr; SignUp</td><td style="font-weight:700">66.60%</td>
+            <td><span class="grade-badge grade-c">C</span></td>
+            <td>3,672</td><td>33.40%</td><td>Below average. Sign-up friction is high.</td>
+          </tr>
+          <tr>
+            <td>SignUp &rarr; Wish1</td><td style="font-weight:700">98.66%</td>
+            <td><span class="grade-badge grade-a">A+</span></td>
+            <td>98</td><td>1.34%</td><td>Excellent. Seamless handoff to creation.</td>
+          </tr>
+          <tr>
+            <td>Wish1 &rarr; Wish2</td><td style="font-weight:700">53.86%</td>
+            <td><span class="grade-badge grade-d">D+</span></td>
+            <td>3,333</td><td>46.14%</td><td>Poor. Nearly half of creators stop after one game.</td>
+          </tr>
+          <tr>
+            <td>Wish2 &rarr; wish5</td><td style="font-weight:700">38.89%</td>
+            <td><span class="grade-badge grade-f">F</span></td>
+            <td>2,377</td><td>61.11%</td><td>Critical. 6 in 10 users with 2 wishes never reach 5.</td>
+          </tr>
+          <tr>
+            <td>wish5 &rarr; wish10</td><td style="font-weight:700">43.69%</td>
+            <td><span class="grade-badge grade-d">D</span></td>
+            <td>852</td><td>56.31%</td><td>Poor. Majority of 5-wish users don't reach 10.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 9. DEVICE & COUNTRY INSIGHTS ============ -->
+  <section id="device-country">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Device &amp; Country Insights</h2>
+
+    <!-- Device Family -->
+    <div class="card">
+      <h3>Device Family Breakdown</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Traffic split: Android 49.5% &middot; Windows 34.4% &middot; iOS 8.0% &middot; Mac 4.0% &middot; Other 4.4% (too small to be statistically meaningful)</p>
+
+      <table class="scorecard-table">
+        <thead>
+          <tr><th>Device</th><th>Page Views</th><th>Modal &rarr; SignUp</th><th>W1 &rarr; W2</th><th>W2 &rarr; W5</th><th>W5 &rarr; W10</th><th>E2E</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:700">Android</td><td>9,330</td>
+            <td style="font-weight:700; color:var(--green);">70.54%</td>
+            <td>53.31%</td><td>38.52%</td><td>43.47%</td>
+            <td style="font-weight:700">3.60%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Windows</td><td>6,481</td>
+            <td>64.39%</td>
+            <td>54.25%</td><td>38.53%</td><td>41.81%</td>
+            <td style="font-weight:700">3.35%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">iOS</td><td>1,514</td>
+            <td style="font-weight:700; color:var(--red);">57.48%</td>
+            <td>53.97%</td><td>38.60%</td><td style="font-weight:700; color:var(--green);">54.29%</td>
+            <td style="font-weight:700">3.76%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Mac OS X</td><td>758</td>
+            <td style="font-weight:700; color:var(--red);">50.64%</td>
+            <td>55.79%</td><td style="font-weight:700; color:var(--green);">46.15%</td><td>45.00%</td>
+            <td style="font-weight:700">3.56%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-wrap">
+        <h4>E2E Conversion by Device</h4>
+        <canvas id="chartDeviceE2E" height="220"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>Modal &rarr; SignUp Rate by Device</h4>
+        <canvas id="chartDeviceSignup" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h3>Device Findings</h3>
+
+      <div class="finding-item">
+        <span class="finding-num">1</span>
+        <strong>Funnel problems are device-agnostic.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Wish1&rarr;wish10 survival is ~9% across all major devices. The retention collapse is a product-level issue, not a platform-specific one. No single device is dragging down the overall funnel.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">2</span>
+        <strong>iOS has the worst sign-up conversion (57.48%) &mdash; 13 points below Android.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Worth investigating Safari-specific friction: autofill behavior, social auth rendering, or keyboard issues on the sign-up form. Fixing this for 1,514 users could recover ~100+ sign-ups.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">3</span>
+        <strong>Apple users who DO sign up retain better.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Mac Wish2&rarr;W5 is 46.15% vs ~38.5% for Android/Windows. iOS wish5&rarr;wish10 is 54.29% &mdash; best of any device. These users are higher-quality creators once past the sign-up wall.</p>
+      </div>
+    </div>
+
+    <!-- Country -->
+    <div class="card" style="margin-top:28px;">
+      <h3>Country Breakdown (Top 15 by Volume)</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">190+ countries in the dataset. Showing countries with 250+ page views.</p>
+
+      <table class="scorecard-table">
+        <thead>
+          <tr><th>Country</th><th>PV</th><th>SignUps</th><th>wish_10</th><th>E2E</th><th>vs Avg</th></tr>
+        </thead>
+        <tbody>
+          <tr style="background:#fee2e2;">
+            <td style="font-weight:700">India</td><td>3,062</td><td>1,086</td><td>59</td>
+            <td style="font-weight:700; color:var(--red);">1.93%</td><td style="color:var(--red);">-45%</td>
+          </tr>
+          <tr style="background:#d1fae5;">
+            <td style="font-weight:700">Brazil</td><td>2,022</td><td>882</td><td>107</td>
+            <td style="font-weight:700; color:var(--green);">5.29%</td><td style="color:var(--green);">+51%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Philippines</td><td>885</td><td>352</td><td>36</td>
+            <td style="font-weight:700">4.07%</td><td style="color:var(--green);">+16%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Indonesia</td><td>792</td><td>308</td><td>29</td>
+            <td style="font-weight:700">3.66%</td><td>+4%</td>
+          </tr>
+          <tr style="background:#fee2e2;">
+            <td style="font-weight:700">Pakistan</td><td>679</td><td>267</td><td>14</td>
+            <td style="font-weight:700; color:var(--red);">2.06%</td><td style="color:var(--red);">-41%</td>
+          </tr>
+          <tr style="background:#d1fae5;">
+            <td style="font-weight:700">Italy</td><td>577</td><td>247</td><td>27</td>
+            <td style="font-weight:700; color:var(--green);">4.68%</td><td style="color:var(--green);">+33%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Vietnam</td><td>543</td><td>180</td><td>16</td>
+            <td style="font-weight:700">2.95%</td><td style="color:var(--red);">-16%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Egypt</td><td>453</td><td>160</td><td>12</td>
+            <td style="font-weight:700">2.65%</td><td style="color:var(--red);">-25%</td>
+          </tr>
+          <tr style="background:#fee2e2;">
+            <td style="font-weight:700">Bangladesh</td><td>448</td><td>180</td><td>6</td>
+            <td style="font-weight:700; color:var(--red);">1.34%</td><td style="color:var(--red);">-62%</td>
+          </tr>
+          <tr style="background:#d1fae5;">
+            <td style="font-weight:700">Spain</td><td>381</td><td>153</td><td>22</td>
+            <td style="font-weight:700; color:var(--green);">5.77%</td><td style="color:var(--green);">+64%</td>
+          </tr>
+          <tr style="background:#fee2e2;">
+            <td style="font-weight:700">Malaysia</td><td>339</td><td>90</td><td>6</td>
+            <td style="font-weight:700; color:var(--red);">1.77%</td><td style="color:var(--red);">-50%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Morocco</td><td>317</td><td>133</td><td>8</td>
+            <td style="font-weight:700">2.52%</td><td style="color:var(--red);">-28%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Algeria</td><td>288</td><td>120</td><td>7</td>
+            <td style="font-weight:700">2.43%</td><td style="color:var(--red);">-31%</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">United States</td><td>281</td><td>84</td><td>9</td>
+            <td style="font-weight:700">3.20%</td><td>-9%</td>
+          </tr>
+          <tr style="background:#d1fae5;">
+            <td style="font-weight:700">Poland</td><td>274</td><td>115</td><td>13</td>
+            <td style="font-weight:700; color:var(--green);">4.74%</td><td style="color:var(--green);">+35%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-grid" style="margin-top:20px;">
+      <div class="chart-wrap">
+        <h4>E2E Conversion by Country (Top 15)</h4>
+        <canvas id="chartCountryE2E" height="280"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>wish_10 Volume by Country (Top 15)</h4>
+        <canvas id="chartCountryW10" height="280"></canvas>
+      </div>
+    </div>
+
+    <!-- India Deep Dive -->
+    <div class="bottleneck-card" style="margin-top:20px; border-left: 5px solid var(--red);">
+      <h4>Deep Dive: India vs. Brazil (Why India Underperforms)</h4>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">India is 16.3% of all ad traffic but only 8.9% of wish_10. The gap is primarily in deep retention, not top-of-funnel.</p>
+      <table class="scorecard-table">
+        <thead>
+          <tr><th>Step</th><th>India</th><th>Brazil</th><th>Gap</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Message &rarr; Modal</td><td>65.6%</td><td>72.5%</td><td style="color:var(--red); font-weight:700;">-6.9pt</td></tr>
+          <tr><td>Modal &rarr; SignUp</td><td>65.2%</td><td>69.2%</td><td style="color:var(--red); font-weight:700;">-4.0pt</td></tr>
+          <tr><td>Wish1 &rarr; Wish2</td><td>52.4%</td><td>58.1%</td><td style="color:var(--red); font-weight:700;">-5.7pt</td></tr>
+          <tr><td>Wish2 &rarr; wish5</td><td style="font-weight:700; color:var(--red);">32.8%</td><td>41.2%</td><td style="color:var(--red); font-weight:700;">-8.4pt</td></tr>
+          <tr><td>wish5 &rarr; wish10</td><td style="font-weight:700; color:var(--red);">32.1%</td><td style="font-weight:700; color:var(--green);">51.2%</td><td style="color:var(--red); font-weight:700;">-19.1pt</td></tr>
+          <tr style="background:var(--gray-100);"><td style="font-weight:700;">E2E</td><td style="font-weight:700; color:var(--red);">1.93%</td><td style="font-weight:700; color:var(--green);">5.29%</td><td style="color:var(--red); font-weight:700;">-3.36pt</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px; color:var(--text-secondary); margin-top:12px;">India&rsquo;s wish5&rarr;wish10 retention (32.1%) is nearly <strong>20 points</strong> below Brazil (51.2%). Likely factors: lower-end device performance affecting game quality, slower network speeds impacting load times, or weaker product-market fit for the &ldquo;make a game&rdquo; value prop in this market.</p>
+    </div>
+
+    <!-- South Asia Cluster -->
+    <div class="bottleneck-card" style="border-left: 5px solid var(--orange);">
+      <h4>South Asia Cluster: India + Pakistan + Bangladesh</h4>
+      <div style="display:flex; gap:32px; align-items:center; margin:16px 0;">
+        <div>
+          <div class="bottleneck-stat" style="color:var(--red);">22%</div>
+          <div style="font-size:13px; color:var(--text-secondary);">of total ad traffic</div>
+        </div>
+        <div>
+          <div class="bottleneck-stat" style="color:var(--red);">12%</div>
+          <div style="font-size:13px; color:var(--text-secondary);">of wish_10 output</div>
+        </div>
+        <div>
+          <div class="bottleneck-stat" style="color:var(--red);">1.89%</div>
+          <div style="font-size:13px; color:var(--text-secondary);">combined E2E (vs 3.51% avg)</div>
+        </div>
+      </div>
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">4,189 page views producing only 79 wish_10. All three countries share the same pattern: acceptable top-of-funnel engagement but catastrophic deep retention. Reallocating this spend to high-E2E markets (Brazil, Spain, Germany, Italy, Poland) at ~5% E2E would yield ~210 wish_10 instead of 79 &mdash; a <strong>+131 wish_10 lift (+20%)</strong> with zero product changes.</p>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h3>Country Findings</h3>
+
+      <div class="finding-item">
+        <span class="finding-num">4</span>
+        <strong>India is the biggest traffic source but worst major-country converter (1.93% E2E).</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">3,062 PVs but only 59 wish_10. Brazil gets 34% less traffic but produces 81% more wish_10 creators (107). The gap is deep retention, not sign-up.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">5</span>
+        <strong>Europe + Latin America are your best-converting regions.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Brazil (5.29%), Spain (5.77%), Germany (5.76%), Italy (4.68%), Poland (4.74%), Turkey (6.01%), Canada (11.0%). These markets convert 1.5&ndash;3x the overall average.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">6</span>
+        <strong>Ad spend reallocation is a zero-cost growth lever.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Shifting the ~4,200 South Asian PVs to countries converting at 5%+ would yield ~210 wish_10 instead of 79 &mdash; a +131 wish_10 lift (+20%) without any product changes.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ 10. FINDINGS & RECOMMENDATIONS ============ -->
+  <section id="findings">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Findings &amp; Recommendations</h2>
+
+    <div class="card">
+      <h3>Key Findings</h3>
+
+      <div class="finding-item">
+        <span class="finding-num">1</span>
+        <strong>The funnel has a clear "conversion gauntlet" between AI Response and Sign-up.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">7,650 users are lost across these two steps (3,978 + 3,672). The combined pass-through rate is only 48.90%, making this the highest-volume loss zone.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">2</span>
+        <strong>Wish retention is the #1 growth lever.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Only 9.15% of first-wish creators reach wish_10. The compounding effect of three sub-55% steps creates massive attrition. 5,710 users create one game and stop.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">3</span>
+        <strong>Top-of-funnel is highly efficient.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">97.95% page-to-session rate and 93.63% message-to-AI rate show the brainstorm experience works well technically. Users engage quickly (18 seconds to AI response).</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">4</span>
+        <strong>Sign-up to first wish is near-perfect (98.66%).</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Once users commit to sign-up, they immediately create. This validates the product's core value proposition at the point of activation.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">5</span>
+        <strong>The 25-second sign-up decision window is critical.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Users make a snap judgment about sign-up. Every unnecessary form field or missing trust signal in this 25-second window costs conversions at a 33.40% drop rate.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">6</span>
+        <strong>The first game result is a make-or-break moment.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">46.14% of users stop after one wish. The 8m 52s median gap before wish 2 suggests users evaluate their first game and decide not to continue. Game quality or lack of guidance may be the cause.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">7</span>
+        <strong>Daily volume varies 2x but conversion rates are stable.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Page views range from 426 (Feb 17) to 940 (Feb 10), but E2E conversion stays relatively consistent, confirming issues are structural, not temporal.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">8</span>
+        <strong>3.51% E2E conversion is a strong baseline for paid search.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">For a 10-step funnel driven by paid search, converting 3.51% of ad clicks to 10-wish creators is solid. The improvements identified could push this above 6%.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Recommendations</h3>
+
+      <div class="rec-card" style="border-left-color: var(--red);">
+        <span class="issue-badge p0" style="margin-bottom:6px;">P0</span>
+        <h4>Improve First Game Experience to Drive Wish Retention</h4>
+        <p>Address the 46.14% drop after first wish. Ensure the first game result is high-quality and delightful. Add post-creation prompts like "Try making a puzzle game next" or "See what happens with a different theme." Provide visible progress indicators (e.g., "2 of 10 wishes used") to motivate continuation.</p>
+      </div>
+
+      <div class="rec-card" style="border-left-color: var(--red);">
+        <span class="issue-badge p0" style="margin-bottom:6px;">P0</span>
+        <h4>Add Guided Wish Suggestions Between Games</h4>
+        <p>Users who create 2 games but stop before 5 (61.11% drop) likely run out of ideas. Implement AI-powered wish suggestions based on their previous creations. Show a "creators like you also made..." feed. Reduce the cognitive load of coming up with new game ideas.</p>
+      </div>
+
+      <div class="rec-card" style="border-left-color: var(--orange);">
+        <span class="issue-badge p1" style="margin-bottom:6px;">P1</span>
+        <h4>Simplify Sign-up Flow</h4>
+        <p>Reduce the 33.40% sign-up drop by minimizing form fields. Add Google/Apple social auth to enable one-tap sign-up. Consider progressive profiling (collect email only, gather details later). The 25-second decision window demands a frictionless form.</p>
+      </div>
+
+      <div class="rec-card" style="border-left-color: var(--orange);">
+        <span class="issue-badge p1" style="margin-bottom:6px;">P1</span>
+        <h4>Optimize Sign-up Modal Trigger Timing</h4>
+        <p>3,978 users get an AI response but never see the modal. Test triggering the modal earlier (e.g., immediately after the AI response loads) or adding a compelling CTA within the AI response itself. The 26-second gap may indicate users read the response and leave before the modal appears.</p>
+      </div>
+
+      <div class="rec-card" style="border-left-color: var(--yellow);">
+        <span class="issue-badge p2" style="margin-bottom:6px;">P2</span>
+        <h4>Reduce Session &rarr; Message Drop</h4>
+        <p>13.35% of users start a brainstorm session but never type a message. Add auto-populated prompt suggestions or a "click to start" template to reduce blank-page syndrome. Consider auto-focusing the input field with a pulsing cursor.</p>
+      </div>
+
+      <div class="rec-card" style="border-left-color: var(--yellow);">
+        <span class="issue-badge p2" style="margin-bottom:6px;">P2</span>
+        <h4>Implement Re-engagement for Wish Dropoffs</h4>
+        <p>For users who created 1&ndash;4 wishes and stopped, implement email/push re-engagement within 24 hours. Highlight new features, show what their games look like with updates, or offer time-limited incentives. The ~9-minute gap between wishes suggests these are same-session decisions &mdash; re-engagement needs to happen quickly.</p>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- page-ads -->
+
+  <div class="page-content" id="page-noads">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Astrocade &mdash; Excluding Ads Funnel Analysis</h1>
+    <p class="subtitle">February 2026 &middot; All Non-Ad Traffic &middot; /create Landing Page &middot; 10-Step Funnel</p>
+  </div>
+
+  <!-- ============ 1. EXECUTIVE SUMMARY ============ -->
+  <section id="noads-executive-summary">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Executive Summary</h2>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="label">Total Page Views</div>
+        <div class="value">32,896</div>
+        <div class="pct">100%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">User Input</div>
+        <div class="value">17,736</div>
+        <div class="pct">53.91%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">AI Response</div>
+        <div class="value">15,338</div>
+        <div class="pct">46.63%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Sign-up Complete</div>
+        <div class="value">4,092</div>
+        <div class="pct">12.44%</div>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="label">1st Wish</div>
+        <div class="value">4,002</div>
+        <div class="pct">12.17%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">2nd Wish</div>
+        <div class="value">2,303</div>
+        <div class="pct">7.00%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">5 Wishes</div>
+        <div class="value">1,073</div>
+        <div class="pct">3.26%</div>
+      </div>
+      <div class="kpi-card" style="border-top-color: var(--green);">
+        <div class="label">10 Wishes (E2E)</div>
+        <div class="value">575</div>
+        <div class="pct" style="color: var(--green);">1.75%</div>
+      </div>
+    </div>
+
+    <!-- What's Working Well -->
+    <div class="working-well">
+      <h3>What's Working Well</h3>
+      <div class="ww-grid" style="grid-template-columns:1fr 1fr 1fr;">
+        <div class="ww-item">
+          <div class="ww-stat">53.59% wish5&rarr;wish10 retention</div>
+          <div class="ww-desc">More than half of users who reach 5 wishes continue to 10. Significantly better than ads (43.69%). Non-ad users who make it through sign-up are more committed creators.</div>
+        </div>
+        <div class="ww-item">
+          <div class="ww-stat">Organic search converts at 4.69% E2E</div>
+          <div class="ww-desc">Google, Bing, DuckDuckGo, Yahoo, and Brave search traffic combined (~10,158 PV) produces ~476 wish_10 at 4.69% &mdash; better than paid ads (3.51%).</div>
+        </div>
+        <div class="ww-item">
+          <div class="ww-stat">Bing converts at 5.32% &mdash; best major source</div>
+          <div class="ww-desc">3,815 Bing users produce 203 wish_10 creators, outperforming Google organic (4.27%) by 25%.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top 3 Issues -->
+    <div class="issues-section">
+      <h3>Top 3 Issues</h3>
+
+      <div class="issue-card p0">
+        <span class="issue-badge p0">P0 &mdash; CRITICAL</span>
+        <h4>Sign-up Wall: 50.57% drop at Modal&rarr;SignUp</h4>
+        <p>4,186 users see the sign-up modal and don't complete &mdash; more than half. These are users who've already brainstormed, typed a message, received an AI response, and triggered the modal. They're engaged and you're losing them at the gate. Even organic search users (the best non-ad traffic) only convert at 62.08%, vs 66.60% for ads. The blended 49.43% is dragged down by (none)/direct traffic at 23.64%.</p>
+        <p class="impact">Impact: Improving blended sign-up to 60% would add ~100 wish_10 (+17% lift)</p>
+      </div>
+
+      <div class="issue-card p0">
+        <span class="issue-badge p0">P0 &mdash; CRITICAL</span>
+        <h4>54.5% Junk/Direct Traffic (0.43% E2E)</h4>
+        <p>17,935 of 32,896 page views come from (none)/direct sources with near-zero conversion. Google Display (1,520 PV, 0 wish_10) and Taboola (155 PV, 0 wish_10) are pure waste. This junk traffic pollutes every metric &mdash; the blended 1.75% E2E masks the fact that organic search converts at 4.69%, better than paid ads (3.51%).</p>
+        <p class="impact">Impact: Filtering junk traffic would focus resources on the ~10,158 organic search PV converting at 4.69%</p>
+      </div>
+
+      <div class="issue-card p1">
+        <span class="issue-badge p1">P1 &mdash; HIGH</span>
+        <h4>Session&rarr;Message drop (35% lost)</h4>
+        <p>9,554 users start a session but never type a message. However, this is largely a traffic quality issue, not a product issue. Organic search Session&rarr;Message is 81.28% (close to ads at 86.66%), while (none)/direct is 55.65%. Fixing the junk traffic problem (P0 #2) would largely resolve this metric.</p>
+        <p class="impact">Impact: Mostly resolves by addressing junk traffic; product-side improvement is secondary</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. ANALYSIS METHODOLOGY ============ -->
+  <section id="noads-methodology">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Analysis Methodology</h2>
+
+    <div class="meth-step">
+      <span class="step-num">1</span>
+      <h4>Step-over-Step Conversion Rates</h4>
+      <div class="step-body">
+        Each step's conversion rate is calculated as: <strong>rate = (step N count) / (step N-1 count) &times; 100</strong>
+        <div class="code-block">PV &rarr; Session:      27,290 / 32,896 = 82.96%
+Session &rarr; Message:  17,736 / 27,290 = 65.01%
+Message &rarr; AI Resp:  15,338 / 17,736 = 86.48%
+AI Resp &rarr; Modal:     8,278 / 15,338 = 53.97%
+Modal &rarr; SignUp:      4,092 /  8,278 = 49.43%
+SignUp &rarr; Wish1:      4,002 /  4,092 = 97.80%
+Wish1 &rarr; Wish2:      2,303 /  4,002 = 57.55%
+Wish2 &rarr; wish5:      1,073 /  2,303 = 46.59%
+wish5 &rarr; wish10:        575 /  1,073 = 53.59%
+
+End-to-End:              575 / 32,896 =  1.75%</div>
+      </div>
+    </div>
+
+    <div class="meth-step">
+      <span class="step-num">2</span>
+      <h4>Drop-off Ranking</h4>
+      <div class="step-body">
+        Users lost at each step ranked by relative drop percentage:
+        <div class="code-block">Rank  Transition              Lost     % Drop
+  1.  Wish2 &rarr; wish5         1,230    53.41%
+  2.  Modal &rarr; SignUp        4,186    50.57%
+  3.  AI Resp &rarr; Modal       7,060    46.03%
+  4.  W5 &rarr; W10                498    46.41%
+  5.  Wish1 &rarr; Wish2         1,699    42.45%
+  6.  Session &rarr; Message     9,554    34.99%
+  7.  PV &rarr; Session           5,606    17.04%
+  8.  Msg &rarr; AI Resp          2,398    13.52%
+  9.  SignUp &rarr; Wish1            90     2.20%</div>
+      </div>
+    </div>
+
+    <div class="meth-step">
+      <span class="step-num">3</span>
+      <h4>Ads vs No-Ads Comparison</h4>
+      <div class="step-body">
+        Side-by-side comparison of step-over-step rates between ads and non-ad traffic:
+        <div class="code-block">Step              Ads      No-Ads    Gap
+PV &rarr; Session     97.95%   82.96%    -14.99pt
+Session &rarr; Msg    86.66%   65.01%    -21.65pt
+Msg &rarr; AI Resp    93.63%   86.48%    - 7.15pt
+AI Resp &rarr; Modal  73.43%   53.97%    -19.46pt
+Modal &rarr; SignUp   66.60%   49.43%    -17.17pt  &larr; huge gap
+SignUp &rarr; Wish1   98.66%   97.80%    - 0.86pt
+Wish1 &rarr; Wish2   53.86%   57.55%    + 3.69pt  &larr; no-ads better
+Wish2 &rarr; wish5   38.89%   46.59%    + 7.70pt  &larr; no-ads better
+wish5 &rarr; wish10   43.69%   53.59%    + 9.90pt  &larr; no-ads better
+E2E               3.51%    1.75%    - 1.76pt</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. FUNNEL VISUALIZATION ============ -->
+  <section id="noads-funnel-viz">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Funnel Visualization</h2>
+
+    <div class="card">
+      <h3>Funnel Progression (% of Total Page Views)</h3>
+      <div id="noads-funnel-bars"></div>
+    </div>
+
+    <div class="card">
+      <h3>Funnel Bar Chart</h3>
+      <canvas id="noads-funnelBarChart" height="300"></canvas>
+    </div>
+  </section>
+
+  <!-- ============ 4. STEP-BY-STEP DEEP DIVE ============ -->
+  <section id="noads-step-deep-dive">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Step-by-Step Deep Dive</h2>
+
+    <!-- Engagement -->
+    <div class="card">
+      <span class="group-label group-engagement">Engagement Zone &mdash; Page &rarr; AI Response</span>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Non-ad traffic shows lower engagement than paid search. The session&rarr;message rate of 65.01% (vs 86.66% for ads) shows many non-ad visitors arrive with less intent.</p>
+
+      <div class="transition-row" style="background: var(--gray-100); font-weight:700; font-size:12px; border-radius:6px 6px 0 0;">
+        <div>Transition</div><div>Conversion</div><div style="text-align:right">Rate</div><div style="text-align:right">Lost</div><div style="text-align:right">Median Time</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Page &rarr; Session</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:82.96%; background:var(--blue);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--blue);">82.96%</div>
+        <div style="text-align:right; color:var(--text-secondary);">5,606</div>
+        <div style="text-align:right">1s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Session &rarr; Message</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:65.01%; background:var(--orange);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--orange);">65.01%</div>
+        <div style="text-align:right; color:var(--text-secondary);">9,554</div>
+        <div style="text-align:right">6s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Message &rarr; AI Resp</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:86.48%; background:var(--blue);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--blue);">86.48%</div>
+        <div style="text-align:right; color:var(--text-secondary);">2,398</div>
+        <div style="text-align:right">3s</div>
+      </div>
+    </div>
+
+    <!-- Conversion -->
+    <div class="card">
+      <span class="group-label group-conversion">Conversion Zone &mdash; AI Response &rarr; 1st Wish</span>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Significant drops at AI&rarr;Modal (53.97%) and Modal&rarr;SignUp (49.43%). Without ad-driven purchase intent, the conversion gauntlet is tougher.</p>
+
+      <div class="transition-row" style="background: var(--gray-100); font-weight:700; font-size:12px; border-radius:6px 6px 0 0;">
+        <div>Transition</div><div>Conversion</div><div style="text-align:right">Rate</div><div style="text-align:right">Lost</div><div style="text-align:right">Median Time</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">AI Resp &rarr; Modal</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:53.97%; background:var(--amber);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--amber);">53.97%</div>
+        <div style="text-align:right; color:var(--text-secondary);">7,060</div>
+        <div style="text-align:right">19s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Modal &rarr; SignUp</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:49.43%; background:var(--orange);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--orange);">49.43%</div>
+        <div style="text-align:right; color:var(--text-secondary);">4,186</div>
+        <div style="text-align:right">23s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">SignUp &rarr; Wish1</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:97.80%; background:var(--green);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--green);">97.80%</div>
+        <div style="text-align:right; color:var(--text-secondary);">90</div>
+        <div style="text-align:right">0s</div>
+      </div>
+    </div>
+
+    <!-- Retention -->
+    <div class="card">
+      <span class="group-label group-retention">Retention Zone &mdash; Wish1 &rarr; wish10</span>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Non-ad users who survive the sign-up gauntlet actually retain better than ad users at every wish milestone. These are higher-quality creators.</p>
+
+      <div class="transition-row" style="background: var(--gray-100); font-weight:700; font-size:12px; border-radius:6px 6px 0 0;">
+        <div>Transition</div><div>Conversion</div><div style="text-align:right">Rate</div><div style="text-align:right">Lost</div><div style="text-align:right">Median Time</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Wish1 &rarr; Wish2</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:57.55%; background:var(--amber);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--amber);">57.55%</div>
+        <div style="text-align:right; color:var(--text-secondary);">1,699</div>
+        <div style="text-align:right">9m 33s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Wish2 &rarr; wish5</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:46.59%; background:var(--orange);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--orange);">46.59%</div>
+        <div style="text-align:right; color:var(--text-secondary);">1,230</div>
+        <div style="text-align:right">13m 21s</div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">wish5 &rarr; wish10</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:53.59%; background:var(--amber);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--amber);">53.59%</div>
+        <div style="text-align:right; color:var(--text-secondary);">498</div>
+        <div style="text-align:right">19m 42s</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. SOURCE ANALYSIS ============ -->
+  <section id="noads-source-analysis">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Source Analysis</h2>
+
+    <div class="card">
+      <h3>Traffic Source Breakdown</h3>
+      <table class="source-table">
+        <thead>
+          <tr><th>Source</th><th>Page Views</th><th>Sign-ups</th><th>Wish1</th><th>wish_10</th><th>E2E</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight:700">(none) / Direct</td><td>17,935</td><td>562</td><td>546</td><td>77</td><td style="color:var(--red); font-weight:700;">0.43%</td></tr>
+          <tr style="background:#d1fae5;"><td style="font-weight:700">Google Organic</td><td>5,388</td><td>1,612</td><td>1,575</td><td>230</td><td style="color:var(--green); font-weight:700;">4.27%</td></tr>
+          <tr style="background:#d1fae5;"><td style="font-weight:700">Bing</td><td>3,815</td><td>1,434</td><td>1,406</td><td>203</td><td style="color:var(--green); font-weight:700;">5.32%</td></tr>
+          <tr><td style="font-weight:700">accounts.google.com</td><td>2,382</td><td>2</td><td>2</td><td>0</td><td style="color:var(--red); font-weight:700;">0.00%</td></tr>
+          <tr><td style="font-weight:700">Google Display (doubleclick)</td><td>1,520</td><td>3</td><td>3</td><td>0</td><td style="color:var(--red); font-weight:700;">0.00%</td></tr>
+          <tr style="background:#d1fae5;"><td style="font-weight:700">DuckDuckGo</td><td>626</td><td>133</td><td>131</td><td>24</td><td style="color:var(--green); font-weight:700;">3.83%</td></tr>
+          <tr style="background:#d1fae5;"><td style="font-weight:700">Yahoo Search</td><td>251</td><td>82</td><td>81</td><td>11</td><td style="color:var(--green); font-weight:700;">4.38%</td></tr>
+          <tr><td style="font-weight:700">YouTube</td><td>186</td><td>0</td><td>0</td><td>0</td><td style="color:var(--red); font-weight:700;">0.00%</td></tr>
+          <tr><td style="font-weight:700">Taboola</td><td>155</td><td>0</td><td>0</td><td>0</td><td style="color:var(--red); font-weight:700;">0.00%</td></tr>
+          <tr style="background:#d1fae5;"><td style="font-weight:700">Brave Search</td><td>78</td><td>34</td><td>33</td><td>8</td><td style="color:var(--green); font-weight:700;">10.26%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-wrap">
+        <h4>E2E Conversion Rate by Source</h4>
+        <canvas id="chartSourceE2E" height="280"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>wish_10 Volume by Source</h4>
+        <canvas id="chartSourceW10" height="280"></canvas>
+      </div>
+    </div>
+
+    <div class="callout-card waste" style="margin-top:20px;">
+      <h4>Junk Traffic: ~19,800+ Page Views Producing Near-Zero Creators</h4>
+      <p><strong>(none)/Direct:</strong> 17,935 PV &rarr; 77 wish_10 (0.43% E2E)<br>
+      <strong>Google Display:</strong> 1,520 PV &rarr; 0 wish_10 (0.00%)<br>
+      <strong>Taboola:</strong> 155 PV &rarr; 0 wish_10 (0.00%)<br>
+      <strong>YouTube:</strong> 186 PV &rarr; 0 wish_10 (0.00%)<br>
+      <strong>accounts.google.com:</strong> 2,382 PV &rarr; 0 wish_10 (0.00%)<br><br>
+      Combined: ~22,178 page views producing 77 wish_10 at 0.35% E2E. This is 67% of all non-ad traffic with very low creator yield.</p>
+    </div>
+
+    <div class="callout-card hero">
+      <h4>Organic Search Hero: ~10,158 PV &rarr; ~476 wish_10 at 4.69% E2E</h4>
+      <p><strong>Google Organic:</strong> 5,388 PV &rarr; 230 wish_10 (4.27%)<br>
+      <strong>Bing:</strong> 3,815 PV &rarr; 203 wish_10 (5.32%)<br>
+      <strong>DuckDuckGo:</strong> 626 PV &rarr; 24 wish_10 (3.83%)<br>
+      <strong>Yahoo Search:</strong> 251 PV &rarr; 11 wish_10 (4.38%)<br>
+      <strong>Brave Search:</strong> 78 PV &rarr; 8 wish_10 (10.26%)<br><br>
+      Combined: ~10,158 page views producing ~476 wish_10 at <strong>4.69% E2E</strong> &mdash; better than paid ads (3.51%). Organic search users arrive with intent and convert at high rates. SEO investment has clear ROI.</p>
+    </div>
+  </section>
+
+  <!-- ============ 6. DAILY TRENDS ============ -->
+  <section id="noads-daily-trends">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Daily Trends</h2>
+    <div class="chart-grid">
+      <div class="chart-wrap">
+        <h4>Daily Page Views &amp; Sessions</h4>
+        <canvas id="noads-chartPVSessions" height="220"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>Daily Sign-ups &amp; 1st Wishes</h4>
+        <canvas id="noads-chartSignups" height="220"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>Daily Wish Milestones (Wish2, wish5, wish10)</h4>
+        <canvas id="noads-chartWishes" height="220"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>Daily E2E Conversion Rate (wish10 / PV)</h4>
+        <canvas id="noads-chartE2E" height="220"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. ADS VS NO-ADS COMPARISON ============ -->
+  <section id="noads-comparison">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Ads vs No-Ads Comparison</h2>
+
+    <!-- Executive Comparison Summary -->
+    <div class="card" style="border-top: 3px solid var(--blue);">
+      <h3>Comparison Summary</h3>
+      <div class="ww-grid" style="margin-bottom:20px;">
+        <div style="background:var(--blue-light); border-radius:8px; padding:16px 18px; border-left:4px solid var(--blue);">
+          <div style="font-size:20px; font-weight:800; color:var(--blue-dark);">Organic search (4.69%) beats ads (3.51%)</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">The 1.75% blended non-ads E2E is misleading. Strip out junk traffic and organic search outperforms paid ads by 34%. Bing (5.32%) and Google organic (4.27%) are your highest-converting acquisition channels.</div>
+        </div>
+        <div style="background:var(--green-light); border-radius:8px; padding:16px 18px; border-left:4px solid var(--green);">
+          <div style="font-size:20px; font-weight:800; color:var(--green-dark);">Non-ads users retain better at every wish step</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Wish1&rarr;W2: +3.7pt, W2&rarr;W5: +7.7pt, W5&rarr;W10: +9.9pt. Organic search users who sign up are more committed creators. They chose to find you &mdash; ad users were shown you.</div>
+        </div>
+        <div style="background:var(--red-light); border-radius:8px; padding:16px 18px; border-left:4px solid var(--red);">
+          <div style="font-size:20px; font-weight:800; color:var(--red-dark);">Ads win top-of-funnel by 15&ndash;22 points</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">But most of this gap disappears when comparing organic search only. Organic PV&rarr;Session is 97.94% (identical to ads). The blended non-ads number is dragged down by 54.5% junk traffic.</div>
+        </div>
+        <div style="background:var(--amber-light); border-radius:8px; padding:16px 18px; border-left:4px solid var(--amber);">
+          <div style="font-size:20px; font-weight:800; color:#92400e;">Sign-up is the real battleground</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Modal&rarr;SignUp: Ads 66.60%, organic search 62.08%, blended non-ads 49.43%. The gap between ads and organic search is only 4.5 points. The gap between organic search and (none)/direct is 38 points (62% vs 24%).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Step-by-Step Conversion Rate Comparison</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Organic Search = Google + Bing + DuckDuckGo + Yahoo + Brave (10,158 PV, 476 wish_10)</p>
+      <table class="comparison-table">
+        <thead>
+          <tr><th>Transition</th><th>Ads</th><th>No-Ads (blended)</th><th style="background:var(--green-light);">Organic Search</th><th>Best Channel</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Page &rarr; Session</td><td>97.95%</td><td class="worse">82.96%</td>
+            <td style="font-weight:700;">97.94%</td><td style="color:var(--text-secondary);">Tie (Ads &asymp; Organic)</td>
+          </tr>
+          <tr>
+            <td>Session &rarr; Message</td><td>86.66%</td><td class="worse">65.01%</td>
+            <td style="font-weight:700;">81.28%</td><td style="color:var(--blue); font-weight:700;">Ads (+5pt)</td>
+          </tr>
+          <tr>
+            <td>Message &rarr; AI Resp</td><td>93.63%</td><td class="worse">86.48%</td>
+            <td style="font-weight:700; color:var(--green);">95.20%</td><td style="color:var(--green); font-weight:700;">Organic (+1.6pt)</td>
+          </tr>
+          <tr>
+            <td>AI Resp &rarr; Modal</td><td>73.43%</td><td class="worse">53.97%</td>
+            <td style="font-weight:700;">68.94%</td><td style="color:var(--blue); font-weight:700;">Ads (+4.5pt)</td>
+          </tr>
+          <tr style="background:var(--red-light);">
+            <td style="font-weight:700;">Modal &rarr; SignUp</td><td>66.60%</td><td class="worse">49.43%</td>
+            <td style="font-weight:700;">62.08%</td><td style="color:var(--blue); font-weight:700;">Ads (+4.5pt)</td>
+          </tr>
+          <tr>
+            <td>SignUp &rarr; Wish1</td><td>98.66%</td><td>97.80%</td>
+            <td style="font-weight:700;">97.91%</td><td style="color:var(--text-secondary);">~Tie</td>
+          </tr>
+          <tr style="background:var(--green-light);">
+            <td>Wish1 &rarr; Wish2</td><td>53.86%</td><td class="better">57.55%</td>
+            <td style="font-weight:700; color:var(--green);">57.01%</td><td style="color:var(--green); font-weight:700;">Organic (+3.2pt)</td>
+          </tr>
+          <tr style="background:var(--green-light);">
+            <td>Wish2 &rarr; wish5</td><td>38.89%</td><td class="better">46.59%</td>
+            <td style="font-weight:700; color:var(--green);">48.01%</td><td style="color:var(--green); font-weight:700;">Organic (+9.1pt)</td>
+          </tr>
+          <tr style="background:var(--green-light);">
+            <td>wish5 &rarr; wish10</td><td>43.69%</td><td class="better">53.59%</td>
+            <td style="font-weight:700; color:var(--green);">53.91%</td><td style="color:var(--green); font-weight:700;">Organic (+10.2pt)</td>
+          </tr>
+          <tr style="background:var(--gray-100);">
+            <td style="font-weight:700;">End-to-End</td><td style="font-weight:700;">3.51%</td><td style="font-weight:700;">1.75%</td>
+            <td style="font-weight:700; color:var(--green);">4.69%</td><td style="color:var(--green); font-weight:700;">Organic (+1.18pt)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h3>Key Findings</h3>
+
+      <div class="finding-item">
+        <span class="finding-num">1</span>
+        <strong>Organic search is your best acquisition channel at 4.69% E2E &mdash; not ads.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">The blended 1.75% non-ads E2E hides this. 54.5% of non-ads traffic is junk producing 0.43% E2E, which drags the average down. Organic search alone converts 34% better than paid ads.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">2</span>
+        <strong>Ads only win at the top of the funnel &mdash; and barely when compared to organic search.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Ads vs organic search gaps: Session&rarr;Msg +5pt, AI&rarr;Modal +4.5pt, Modal&rarr;SignUp +4.5pt. These are real but modest. Meanwhile organic search beats ads on Message&rarr;AI (+1.6pt) and all three retention steps (+3 to +10pt).</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">3</span>
+        <strong>Organic search users are higher-quality creators.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Wish1&rarr;wish10 survival: organic search 14.76% vs ads 9.15%. Someone who actively searched for a game-making platform and chose to sign up is more committed than someone who clicked an ad. This compounds across every wish milestone.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">4</span>
+        <strong>The sign-up gap between ads and organic is only 4.5 points (66.60% vs 62.08%).</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">The blended 49.43% makes it look like non-ads sign-up is broken. It's not &mdash; (none)/direct at 23.64% is broken. Organic search sign-up is competitive with ads.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">5</span>
+        <strong>Bing (5.32%) outperforms Google organic (4.27%) at every top-of-funnel step.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Bing Session&rarr;Msg: 85.46% vs Google 79.50%. Bing Modal&rarr;SignUp: 64.83% vs Google 59.46%. Retention is similar. Bing users arrive more ready to engage &mdash; worth investing in Bing SEO.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8. FUNNEL HEALTH SCORECARD ============ -->
+  <section id="noads-scorecard">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Funnel Health Scorecard</h2>
+    <div class="card">
+      <table class="scorecard-table">
+        <thead>
+          <tr><th>Transition</th><th>Rate</th><th>Grade</th><th>Users Lost</th><th>% Lost</th><th>Assessment</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Page &rarr; Session</td><td style="font-weight:700">82.96%</td>
+            <td><span class="grade-badge grade-c">C+</span></td>
+            <td>5,606</td><td>17.04%</td><td>Acceptable but below ads. Lost 5,606 visitors on landing.</td>
+          </tr>
+          <tr>
+            <td>Session &rarr; Message</td><td style="font-weight:700">65.01%</td>
+            <td><span class="grade-badge grade-d">D</span></td>
+            <td>9,554</td><td>35.01%</td><td>Poor. Over a third of sessions produce no input.</td>
+          </tr>
+          <tr>
+            <td>Message &rarr; AI Response</td><td style="font-weight:700">86.48%</td>
+            <td><span class="grade-badge grade-b">B+</span></td>
+            <td>2,398</td><td>13.52%</td><td>Good AI reliability. Minimal technical failures.</td>
+          </tr>
+          <tr>
+            <td>AI Resp &rarr; Modal</td><td style="font-weight:700">53.97%</td>
+            <td><span class="grade-badge grade-d">D</span></td>
+            <td>7,060</td><td>46.03%</td><td>Poor. Nearly half of engaged users leave before modal.</td>
+          </tr>
+          <tr>
+            <td>Modal &rarr; SignUp</td><td style="font-weight:700">49.43%</td>
+            <td><span class="grade-badge grade-d">D-</span></td>
+            <td>4,186</td><td>50.57%</td><td>Poor. Half of modal viewers don't sign up.</td>
+          </tr>
+          <tr>
+            <td>SignUp &rarr; Wish1</td><td style="font-weight:700">97.80%</td>
+            <td><span class="grade-badge grade-a">A+</span></td>
+            <td>90</td><td>2.20%</td><td>Excellent. Near-perfect handoff to creation.</td>
+          </tr>
+          <tr>
+            <td>Wish1 &rarr; Wish2</td><td style="font-weight:700">57.55%</td>
+            <td><span class="grade-badge grade-c">C-</span></td>
+            <td>1,699</td><td>42.45%</td><td>Below average, but better than ads (53.86%).</td>
+          </tr>
+          <tr>
+            <td>Wish2 &rarr; wish5</td><td style="font-weight:700">46.59%</td>
+            <td><span class="grade-badge grade-d">D+</span></td>
+            <td>1,230</td><td>53.41%</td><td>Poor, but better than ads (38.89%).</td>
+          </tr>
+          <tr>
+            <td>wish5 &rarr; wish10</td><td style="font-weight:700">53.59%</td>
+            <td><span class="grade-badge grade-d">D+</span></td>
+            <td>498</td><td>46.41%</td><td>Poor but best relative to ads (+9.90pt).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  </div><!-- page-noads -->
+
+  <div class="page-content" id="page-combined">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Astrocade &mdash; Combined Funnel Analysis (Ads + Organic Search)</h1>
+    <p class="subtitle">February 2026 &middot; Paid Search Ads + Organic Search &middot; Excluding Junk Traffic &middot; 28,998 Visitors &middot; 10-Step Funnel</p>
+  </div>
+
+  <!-- ============ 1. EXECUTIVE SUMMARY ============ -->
+  <section id="combined-executive-summary">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Executive Summary</h2>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="label">Total Visitors</div>
+        <div class="value">28,998</div>
+        <div class="pct">100%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">User Input</div>
+        <div class="value">24,077</div>
+        <div class="pct">83.03%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">AI Response</div>
+        <div class="value">22,670</div>
+        <div class="pct">78.18%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Sign-up Complete</div>
+        <div class="value">10,616</div>
+        <div class="pct">36.61%</div>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="label">1st Wish</div>
+        <div class="value">10,449</div>
+        <div class="pct">36.03%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">2nd Wish</div>
+        <div class="value">5,729</div>
+        <div class="pct">19.76%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">5 Wishes</div>
+        <div class="value">2,396</div>
+        <div class="pct">8.26%</div>
+      </div>
+      <div class="kpi-card" style="border-top-color: var(--green);">
+        <div class="label">10 Wishes (E2E)</div>
+        <div class="value">1,137</div>
+        <div class="pct" style="color: var(--green);">3.92%</div>
+      </div>
+    </div>
+
+    <!-- Funnel Zone Summary -->
+    <div class="card">
+      <h3>Funnel Zone Summary</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+        <div style="background:var(--green-light); border-radius:8px; padding:20px; border-left:4px solid var(--green);">
+          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--green-dark); margin-bottom:8px;">Zone 1 &mdash; Engagement (PV &rarr; AI Response)</div>
+          <div style="font-size:28px; font-weight:800; color:var(--green-dark);">78.18%</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">pass-through &middot; 6,328 users lost</div>
+          <div style="font-size:13px; color:var(--green-dark); margin-top:8px; font-weight:600;">Healthy. 4 in 5 visitors get an AI response. Not much to fix here.</div>
+        </div>
+        <div style="background:var(--amber-light); border-radius:8px; padding:20px; border-left:4px solid var(--amber);">
+          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#92400e; margin-bottom:8px;">Zone 2 &mdash; Conversion (AI Response &rarr; Wish 1)</div>
+          <div style="font-size:28px; font-weight:800; color:#92400e;">46.10%</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">pass-through &middot; 12,221 users lost</div>
+          <div style="font-size:13px; color:#92400e; margin-top:8px; font-weight:600;">The gauntlet. Two consecutive drops (AI&rarr;Modal 28.10%, Modal&rarr;SignUp 34.88%) lose over half of engaged users.</div>
+        </div>
+        <div style="background:var(--red-light); border-radius:8px; padding:20px; border-left:4px solid var(--red);">
+          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--red-dark); margin-bottom:8px;">Zone 3 &mdash; Retention (Wish 1 &rarr; Wish 10)</div>
+          <div style="font-size:28px; font-weight:800; color:var(--red-dark);">10.88%</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">pass-through &middot; 9,312 users lost</div>
+          <div style="font-size:13px; color:var(--red-dark); margin-top:8px; font-weight:600;">The #1 growth lever. 89% of creators who make their first game never reach 10. Three compounding drops (45%, 58%, 53%) create massive attrition.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. GAP ANALYSIS ============ -->
+  <section id="combined-gap-analysis">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Gap Analysis</h2>
+
+    <!-- Gap 1 -->
+    <div class="bottleneck-card" style="border-left:5px solid var(--red);">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <span style="display:inline-block; background:var(--red); color:#fff; width:32px; height:32px; border-radius:50%; text-align:center; line-height:32px; font-size:14px; font-weight:800;">1</span>
+        <h4 style="margin:0;">Wish 2 &rarr; Wish 5 &mdash; 58.18% drop</h4>
+      </div>
+      <div class="bottleneck-stat" style="color:var(--red);">58.18%</div>
+      <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">3,333 users lost</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Possible Reasons</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>Run out of game ideas after 2 attempts</li>
+            <li>Game quality doesn&rsquo;t noticeably improve between wishes &mdash; no &ldquo;aha&rdquo; moment</li>
+            <li>No guidance or prompting to continue</li>
+            <li>Users explored the concept, satisfied their curiosity, and leave</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Solutions</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>AI-powered &ldquo;try making this next&rdquo; suggestions based on their first 2 games</li>
+            <li>Show a progress bar (&ldquo;2 of 10 wishes used &mdash; unlock X at 5&rdquo;)</li>
+            <li>Surface games made by similar creators for inspiration</li>
+            <li>Improve game quality/variety so wishes 3-5 feel meaningfully different from 1-2</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 2 -->
+    <div class="bottleneck-card" style="border-left:5px solid var(--red);">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <span style="display:inline-block; background:var(--red); color:#fff; width:32px; height:32px; border-radius:50%; text-align:center; line-height:32px; font-size:14px; font-weight:800;">2</span>
+        <h4 style="margin:0;">Wish 5 &rarr; Wish 10 &mdash; 52.55% drop</h4>
+      </div>
+      <div class="bottleneck-stat" style="color:var(--red);">52.55%</div>
+      <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">1,259 users lost</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Possible Reasons</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>By wish 5 they&rsquo;ve invested ~35 minutes &mdash; natural fatigue</li>
+            <li>Hit a quality ceiling where games start feeling repetitive</li>
+            <li>No social/sharing incentive to keep creating</li>
+            <li>Platform limitations become visible with more usage</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Solutions</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>Unlock new features/templates at wish 5 milestone</li>
+            <li>Introduce sharing/community features (&ldquo;share your game with friends&rdquo;)</li>
+            <li>Send re-engagement notification if they leave after wish 5</li>
+            <li>Diversify game types so later wishes feel fresh</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 3 -->
+    <div class="bottleneck-card" style="border-left:5px solid var(--red);">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <span style="display:inline-block; background:var(--red); color:#fff; width:32px; height:32px; border-radius:50%; text-align:center; line-height:32px; font-size:14px; font-weight:800;">3</span>
+        <h4 style="margin:0;">Wish 1 &rarr; Wish 2 &mdash; 45.17% drop</h4>
+      </div>
+      <div class="bottleneck-stat" style="color:var(--red);">45.17%</div>
+      <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">4,720 users lost</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Possible Reasons</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>First game result doesn&rsquo;t impress &mdash; the &ldquo;is this it?&rdquo; moment</li>
+            <li>No clear prompt or nudge to create a second game</li>
+            <li>User was just testing/exploring, not committed</li>
+            <li>The 8m 52s median gap means they&rsquo;re evaluating the result and deciding not to continue</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Solutions</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>Invest heavily in first-game quality &mdash; this is the single highest-leverage product moment</li>
+            <li>Immediately after first game, show &ldquo;try a different genre&rdquo; or &ldquo;make it multiplayer&rdquo; prompt</li>
+            <li>Show what other creators made to set expectations and inspire</li>
+            <li>Reduce time-to-delight &mdash; if the first game loads faster and plays better, more users try a second</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 4 -->
+    <div class="bottleneck-card" style="border-left:5px solid var(--orange);">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <span style="display:inline-block; background:var(--orange); color:#fff; width:32px; height:32px; border-radius:50%; text-align:center; line-height:32px; font-size:14px; font-weight:800;">4</span>
+        <h4 style="margin:0;">Modal &rarr; Sign-up &mdash; 34.88% drop</h4>
+      </div>
+      <div class="bottleneck-stat" style="color:var(--orange);">34.88%</div>
+      <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">5,685 users lost</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Possible Reasons</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>Too many form fields</li>
+            <li>No Google/Apple social auth (one-tap sign-up)</li>
+            <li>Trust concerns &mdash; &ldquo;why do I need an account?&rdquo;</li>
+            <li>25-second median decision time = snap judgment, every friction point costs</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Solutions</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>Add social auth (Google/Apple one-tap)</li>
+            <li>Reduce form to email-only, collect details later</li>
+            <li>Show what they&rsquo;ll get (&ldquo;sign up to play your game&rdquo;) &mdash; make the value concrete</li>
+            <li>A/B test removing the modal and letting users create without an account first</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 5 -->
+    <div class="bottleneck-card" style="border-left:5px solid var(--orange);">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <span style="display:inline-block; background:var(--orange); color:#fff; width:32px; height:32px; border-radius:50%; text-align:center; line-height:32px; font-size:14px; font-weight:800;">5</span>
+        <h4 style="margin:0;">AI Response &rarr; Modal &mdash; 28.10% drop</h4>
+      </div>
+      <div class="bottleneck-stat" style="color:var(--orange);">28.10%</div>
+      <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">6,369 users lost</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Possible Reasons</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>AI response doesn&rsquo;t clearly communicate &ldquo;your game is ready, sign up to play it&rdquo;</li>
+            <li>Modal trigger timing is too late &mdash; users read, shrug, and leave</li>
+            <li>The AI response is informational but not exciting/visual</li>
+            <li>Users don&rsquo;t understand what happens next</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Solutions</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>Show a visual preview/mockup of the game in the AI response</li>
+            <li>Trigger the modal immediately after AI response loads</li>
+            <li>Add a clear CTA within the AI response: &ldquo;Your game is ready &mdash; sign up to play it&rdquo;</li>
+            <li>Make the AI response feel like a reveal, not a text summary</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap 6 -->
+    <div class="bottleneck-card" style="border-left:5px solid var(--yellow);">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <span style="display:inline-block; background:var(--yellow); color:#fff; width:32px; height:32px; border-radius:50%; text-align:center; line-height:32px; font-size:14px; font-weight:800;">6</span>
+        <h4 style="margin:0;">Session &rarr; Message &mdash; 15.23% drop</h4>
+      </div>
+      <div class="bottleneck-stat" style="color:var(--yellow);">15.23%</div>
+      <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">4,326 users lost</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Possible Reasons</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>Blank input field &mdash; &ldquo;what do I type?&rdquo; syndrome</li>
+            <li>Users browsing/evaluating the page, not ready to commit</li>
+            <li>Mobile keyboard friction</li>
+            <li>Page content above the input distracts</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:6px;">Solutions</div>
+          <ul style="font-size:13px; color:var(--text-secondary); line-height:1.7; padding-left:18px;">
+            <li>Pre-populate with clickable prompt suggestions (&ldquo;Make a racing game&rdquo;, &ldquo;Create a puzzle&rdquo;)</li>
+            <li>Auto-focus the input with a pulsing cursor</li>
+            <li>Show example games created from simple prompts</li>
+            <li>Reduce content between landing and the input field</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. FUNNEL VISUALIZATION ============ -->
+  <section id="combined-funnel-viz">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Funnel Visualization</h2>
+
+    <div class="card">
+      <h3>Funnel Progression (% of Total Visitors)</h3>
+      <div id="combined-funnel-bars"></div>
+    </div>
+
+    <div class="card">
+      <h3>Funnel Bar Chart</h3>
+      <canvas id="combined-funnelBarChart" height="300"></canvas>
+    </div>
+  </section>
+
+  <!-- ============ 4. FUNNEL ZONES DEEP DIVE ============ -->
+  <section id="combined-zones">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Funnel Zones Deep Dive</h2>
+
+    <!-- Engagement Zone -->
+    <div class="card">
+      <span class="group-label group-engagement">Engagement Zone &mdash; PV &rarr; AI Response (78.18% pass-through)</span>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">The top of funnel is healthy. 4 in 5 visitors reach the AI response step with minimal friction.</p>
+
+      <div class="transition-row" style="background: var(--gray-100); font-weight:700; font-size:12px; border-radius:6px 6px 0 0;">
+        <div>Transition</div><div>Conversion</div><div style="text-align:right">Rate</div><div style="text-align:right">Lost</div><div style="text-align:right"></div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">PV &rarr; Session</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:97.95%; background:var(--green);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--green);">97.95%</div>
+        <div style="text-align:right; color:var(--text-secondary);">595</div>
+        <div></div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Session &rarr; Message</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:84.77%; background:var(--blue);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--blue);">84.77%</div>
+        <div style="text-align:right; color:var(--text-secondary);">4,326</div>
+        <div></div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Message &rarr; AI</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:94.15%; background:var(--green);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--green);">94.15%</div>
+        <div style="text-align:right; color:var(--text-secondary);">1,407</div>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- Conversion Zone -->
+    <div class="card">
+      <span class="group-label group-conversion">Conversion Zone &mdash; AI Response &rarr; Wish 1 (46.10% pass-through)</span>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">The gauntlet. Two consecutive drops lose over half of engaged users before they create their first game.</p>
+
+      <div class="transition-row" style="background: var(--gray-100); font-weight:700; font-size:12px; border-radius:6px 6px 0 0;">
+        <div>Transition</div><div>Conversion</div><div style="text-align:right">Rate</div><div style="text-align:right">Lost</div><div style="text-align:right"></div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">AI &rarr; Modal</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:71.90%; background:var(--amber);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--amber);">71.90%</div>
+        <div style="text-align:right; color:var(--text-secondary);">6,369</div>
+        <div></div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Modal &rarr; SignUp</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:65.12%; background:var(--orange);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--orange);">65.12%</div>
+        <div style="text-align:right; color:var(--text-secondary);">5,685</div>
+        <div></div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">SignUp &rarr; Wish1</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:98.43%; background:var(--green);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--green);">98.43%</div>
+        <div style="text-align:right; color:var(--text-secondary);">167</div>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- Retention Zone -->
+    <div class="card">
+      <span class="group-label group-retention">Retention Zone &mdash; Wish 1 &rarr; Wish 10 (10.88% pass-through)</span>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">The #1 growth lever. Three compounding drops create massive attrition &mdash; 89% of first-wish creators never reach 10.</p>
+
+      <div class="transition-row" style="background: var(--gray-100); font-weight:700; font-size:12px; border-radius:6px 6px 0 0;">
+        <div>Transition</div><div>Conversion</div><div style="text-align:right">Rate</div><div style="text-align:right">Lost</div><div style="text-align:right"></div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Wish1 &rarr; Wish2</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:54.83%; background:var(--orange);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--orange);">54.83%</div>
+        <div style="text-align:right; color:var(--text-secondary);">4,720</div>
+        <div></div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">Wish2 &rarr; wish5</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:41.82%; background:var(--red);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--red);">41.82%</div>
+        <div style="text-align:right; color:var(--text-secondary);">3,333</div>
+        <div></div>
+      </div>
+      <div class="transition-row">
+        <div class="t-name">wish5 &rarr; wish10</div>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:47.45%; background:var(--red);"></div></div>
+        <div style="text-align:right; font-weight:700; color:var(--red);">47.45%</div>
+        <div style="text-align:right; color:var(--text-secondary);">1,259</div>
+        <div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. FINDINGS & SOLUTIONS ============ -->
+  <section id="combined-findings">
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:20px;">Findings &amp; Solutions</h2>
+
+    <div class="card">
+      <h3>Key Findings</h3>
+
+      <div class="finding-item">
+        <span class="finding-num">1</span>
+        <strong>Retention is the #1 growth lever &mdash; fixing it doubles output.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:6px; line-height:1.6;">10,449 users create their first game. Only 1,137 reach 10 (10.88%). Improving retention to 20% would yield ~2,090 wish_10 &mdash; nearly doubling output without spending more on acquisition.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">2</span>
+        <strong>The first game is the most important moment in the entire funnel.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:6px; line-height:1.6;">4,720 users (45.17%) stop after their first wish. The 8m 52s median gap before wish 2 suggests users evaluate their first game result and decide it&rsquo;s not worth continuing. First-game quality is the single highest-leverage product investment.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">3</span>
+        <strong>The sign-up gauntlet loses 12,054 users across two steps.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:6px; line-height:1.6;">AI&rarr;Modal (28.10% drop) + Modal&rarr;SignUp (34.88% drop) = combined 46.10% pass-through. These are users who brainstormed, typed a message, and got an AI response. They&rsquo;re engaged. The sign-up wall and modal timing are blocking conversion.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">4</span>
+        <strong>The top of funnel is already efficient &mdash; don&rsquo;t over-optimize it.</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:6px; line-height:1.6;">PV&rarr;Session (97.95%) and Message&rarr;AI (94.15%) are near-perfect. Session&rarr;Message (84.77%) has room for improvement but is not the priority. Focus resources on conversion and retention.</p>
+      </div>
+
+      <div class="finding-item">
+        <span class="finding-num">5</span>
+        <strong>Improving Wish2&rarr;Wish5 from 41.82% to 55% adds ~310 wish_10 (+27%).</strong>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:6px; line-height:1.6;">This is the leakiest single step. Users who make 2 games have shown real interest. Getting them to 5 is about guidance, inspiration, and game quality &mdash; not acquisition.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Priority Roadmap</h3>
+
+      <div class="issue-card p0">
+        <span class="issue-badge p0">P0 &mdash; CRITICAL</span>
+        <h4>Priority 1: Improve First Game Quality &amp; Post-Creation Flow</h4>
+        <p>Address the 45.17% Wish1&rarr;Wish2 drop. Ensure first game result is high-quality and delightful. Add immediate post-creation prompts suggesting the next game. Show progress toward milestones. This is the highest-leverage product investment.</p>
+      </div>
+
+      <div class="issue-card p0">
+        <span class="issue-badge p0">P0 &mdash; CRITICAL</span>
+        <h4>Priority 2: Add Guided Wish Suggestions &amp; Retention Hooks</h4>
+        <p>Address the 58.18% Wish2&rarr;Wish5 and 52.55% Wish5&rarr;Wish10 drops. Implement AI-powered wish suggestions. Show progress indicators. Introduce social features. Unlock new capabilities at milestones.</p>
+      </div>
+
+      <div class="issue-card p1">
+        <span class="issue-badge p1">P1 &mdash; HIGH</span>
+        <h4>Priority 3: Simplify Sign-up &amp; Optimize Modal Trigger</h4>
+        <p>Address the 34.88% Modal&rarr;SignUp and 28.10% AI&rarr;Modal drops. Add social auth. Reduce form fields. Test earlier modal trigger timing. Show a game preview in the AI response to drive excitement before the modal.</p>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- page-combined -->
+
+</div><!-- .main -->
+
+<script>
+// === DAILY DATA ===
+const dates = ['Feb 01','Feb 02','Feb 03','Feb 04','Feb 05','Feb 06','Feb 07','Feb 08','Feb 09','Feb 10','Feb 11','Feb 12','Feb 13','Feb 14','Feb 15','Feb 16','Feb 17','Feb 18','Feb 19','Feb 20','Feb 21','Feb 22','Feb 23','Feb 24','Feb 25','Feb 26','Feb 27','Feb 28'];
+const pv =      [812,803,821,712,472,564,689,909,854,940,867,715,690,644,554,504,426,783,720,639,626,645,622,622,588,468,568,583];
+const sessions =[797,789,808,700,459,558,684,898,848,926,848,695,680,637,542,471,403,766,702,626,616,624,606,609,572,456,564,570];
+const msg =     [693,700,699,629,403,489,618,810,732,805,740,596,585,569,468,336,283,666,601,560,547,548,526,528,488,389,482,500];
+const aiResp =  [661,661,671,604,387,446,568,726,659,713,671,544,566,554,442,306,249,650,572,552,516,461,513,512,441,383,466,477];
+const modal =   [491,487,484,462,288,333,440,516,484,523,486,384,420,407,319,187,171,477,400,407,380,317,378,391,343,294,341,383];
+const signUp =  [348,362,332,329,207,247,256,350,334,343,322,236,278,259,204,115,109,315,265,254,235,227,256,258,217,190,216,257];
+const wish1 =   [343,360,331,326,204,247,253,346,329,340,315,231,278,255,201,113,109,312,261,252,230,222,252,254,213,187,207,252];
+const wish2 =   [178,182,182,182,101,129,146,198,170,167,160,126,152,137,107,63,55,172,147,144,126,110,131,136,115,100,122,152];
+const w5 =      [56,77,71,65,45,49,54,75,70,63,70,37,61,55,43,24,18,57,54,50,61,39,43,58,48,41,57,72];
+const w10 =     [25,31,35,29,23,20,21,36,31,31,25,17,31,26,22,9,8,22,22,24,32,12,17,25,17,15,24,31];
+
+// E2E daily
+const e2e = pv.map((v,i) => +((w10[i]/v)*100).toFixed(2));
+
+// === FUNNEL BARS ===
+const funnelData = [
+  {name:'1. Page Viewed (/create)', val:18840, pct:100},
+  {name:'2. brainstorm_session_started', val:18454, pct:97.95},
+  {name:'3. brainstorm_user_message', val:15990, pct:84.87},
+  {name:'4. brainstorm_ai_response', val:14971, pct:79.46},
+  {name:'5. sign_up_modal_viewed', val:10993, pct:58.35},
+  {name:'6. user_sign_up_complete', val:7321, pct:38.86},
+  {name:'7. WishSubmission (1st)', val:7223, pct:38.34},
+  {name:'8. WishSubmission (2nd)', val:3890, pct:20.65},
+  {name:'9. wish_5_milestone', val:1513, pct:8.03},
+  {name:'10. wish_10_milestone', val:661, pct:3.51},
+];
+
+const colors = ['#3b82f6','#3b82f6','#3b82f6','#3b82f6','#f59e0b','#f97316','#10b981','#f97316','#ef4444','#ef4444'];
+
+const container = document.getElementById('funnel-bars');
+funnelData.forEach((d,i) => {
+  const div = document.createElement('div');
+  div.className = 'funnel-bar-container';
+  div.innerHTML =
+    '<div class="funnel-bar-label">' +
+      '<span class="fname">' + d.name + '</span>' +
+      '<span class="fvals">' + d.val.toLocaleString() + ' (' + d.pct + '%)</span>' +
+    '</div>' +
+    '<div class="funnel-bar-outer">' +
+      '<div class="funnel-bar-inner" style="width:' + d.pct + '%; background:' + colors[i] + ';">' + d.pct + '%</div>' +
+    '</div>';
+  container.appendChild(div);
+});
+
+// === FUNNEL BAR CHART ===
+new Chart(document.getElementById('funnelBarChart'), {
+  type: 'bar',
+  data: {
+    labels: funnelData.map(function(d){ return d.name.replace(/^\d+\.\s*/,''); }),
+    datasets: [{
+      label: 'Users',
+      data: funnelData.map(function(d){ return d.val; }),
+      backgroundColor: colors,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: function(v){ return v.toLocaleString(); } } },
+      x: { ticks: { maxRotation: 45, font: { size: 10 } } }
+    }
+  }
+});
+
+// === DAILY CHARTS ===
+var lineOpts = function(yLabel) {
+  return {
+    responsive: true,
+    interaction: { intersect: false, mode: 'index' },
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+    scales: {
+      y: { beginAtZero: true, title: { display: true, text: yLabel, font: { size: 11 } }, ticks: { callback: function(v){ return v.toLocaleString(); } } },
+      x: { ticks: { maxRotation: 45, font: { size: 9 } } }
+    }
+  };
+};
+
+new Chart(document.getElementById('chartPVSessions'), {
+  type: 'line',
+  data: {
+    labels: dates,
+    datasets: [
+      { label: 'Page Views', data: pv, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,.1)', fill: true, tension: .3, pointRadius: 2 },
+      { label: 'Sessions', data: sessions, borderColor: '#8b5cf6', backgroundColor: 'transparent', tension: .3, pointRadius: 2 },
+    ]
+  },
+  options: lineOpts('Users')
+});
+
+new Chart(document.getElementById('chartSignups'), {
+  type: 'line',
+  data: {
+    labels: dates,
+    datasets: [
+      { label: 'Sign-ups', data: signUp, borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,.1)', fill: true, tension: .3, pointRadius: 2 },
+      { label: '1st Wish', data: wish1, borderColor: '#10b981', backgroundColor: 'transparent', tension: .3, pointRadius: 2 },
+    ]
+  },
+  options: lineOpts('Users')
+});
+
+new Chart(document.getElementById('chartWishes'), {
+  type: 'line',
+  data: {
+    labels: dates,
+    datasets: [
+      { label: 'Wish 2', data: wish2, borderColor: '#f59e0b', tension: .3, pointRadius: 2 },
+      { label: 'wish_5', data: w5, borderColor: '#ef4444', tension: .3, pointRadius: 2 },
+      { label: 'wish_10', data: w10, borderColor: '#7c3aed', tension: .3, pointRadius: 2 },
+    ]
+  },
+  options: lineOpts('Users')
+});
+
+new Chart(document.getElementById('chartE2E'), {
+  type: 'line',
+  data: {
+    labels: dates,
+    datasets: [{
+      label: 'E2E %',
+      data: e2e,
+      borderColor: '#10b981',
+      backgroundColor: 'rgba(16,185,129,.1)',
+      fill: true,
+      tension: .3,
+      pointRadius: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    interaction: { intersect: false, mode: 'index' },
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+    scales: {
+      y: { beginAtZero: true, title: { display: true, text: 'Conversion %', font: { size: 11 } }, ticks: { callback: function(v){ return v+'%'; } } },
+      x: { ticks: { maxRotation: 45, font: { size: 9 } } }
+    }
+  }
+});
+
+// === DEVICE CHARTS ===
+var deviceLabels = ['Android','Windows','iOS','Mac OS X'];
+var deviceE2E = [3.60, 3.35, 3.76, 3.56];
+var deviceSignup = [70.54, 64.39, 57.48, 50.64];
+var deviceColors = ['#3b82f6','#8b5cf6','#f97316','#64748b'];
+
+new Chart(document.getElementById('chartDeviceE2E'), {
+  type: 'bar',
+  data: {
+    labels: deviceLabels,
+    datasets: [{
+      label: 'E2E %',
+      data: deviceE2E,
+      backgroundColor: deviceColors,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      annotation: null
+    },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: function(v){ return v+'%'; } }, title: { display: true, text: 'E2E Conversion %', font: { size: 11 } } },
+      x: { ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartDeviceSignup'), {
+  type: 'bar',
+  data: {
+    labels: deviceLabels,
+    datasets: [{
+      label: 'Modal → SignUp %',
+      data: deviceSignup,
+      backgroundColor: deviceSignup.map(function(v){ return v < 60 ? '#ef4444' : v < 65 ? '#f97316' : '#10b981'; }),
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 80, ticks: { callback: function(v){ return v+'%'; } }, title: { display: true, text: 'Sign-up Rate %', font: { size: 11 } } },
+      x: { ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+// === COUNTRY CHARTS ===
+var countryLabels = ['India','Brazil','Philippines','Indonesia','Pakistan','Italy','Vietnam','Egypt','Bangladesh','Spain','Malaysia','Morocco','Algeria','US','Poland'];
+var countryE2Edata = [1.93, 5.29, 4.07, 3.66, 2.06, 4.68, 2.95, 2.65, 1.34, 5.77, 1.77, 2.52, 2.43, 3.20, 4.74];
+var countryW10data = [59, 107, 36, 29, 14, 27, 16, 12, 6, 22, 6, 8, 7, 9, 13];
+
+new Chart(document.getElementById('chartCountryE2E'), {
+  type: 'bar',
+  data: {
+    labels: countryLabels,
+    datasets: [{
+      label: 'E2E %',
+      data: countryE2Edata,
+      backgroundColor: countryE2Edata.map(function(v){ return v >= 4.5 ? '#10b981' : v >= 3.0 ? '#3b82f6' : v >= 2.0 ? '#f97316' : '#ef4444'; }),
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, ticks: { callback: function(v){ return v+'%'; } }, title: { display: true, text: 'E2E %', font: { size: 11 } } },
+      y: { ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartCountryW10'), {
+  type: 'bar',
+  data: {
+    labels: countryLabels,
+    datasets: [{
+      label: 'wish_10',
+      data: countryW10data,
+      backgroundColor: countryE2Edata.map(function(v){ return v >= 4.5 ? '#10b981' : v >= 3.0 ? '#3b82f6' : v >= 2.0 ? '#f97316' : '#ef4444'; }),
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, title: { display: true, text: 'wish_10 Users', font: { size: 11 } } },
+      y: { ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+// === MEDIAN TIMING CHART ===
+new Chart(document.getElementById('chartTimingMedian'), {
+  type: 'bar',
+  data: {
+    labels: [
+      'Page → Session',
+      'Session → Message',
+      'Message → AI Resp',
+      'AI Resp → Modal',
+      'Modal → SignUp',
+      'SignUp → Wish1',
+      'Wish1 → Wish2',
+      'Wish2 → wish5',
+      'wish5 → wish10'
+    ],
+    datasets: [{
+      label: 'Median Time (seconds)',
+      data: [1, 13, 4, 26, 25, 0, 532, 832, 1363],
+      backgroundColor: [
+        '#3b82f6','#3b82f6','#3b82f6','#f59e0b','#f97316','#10b981','#f97316','#ef4444','#ef4444'
+      ],
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) {
+            var v = ctx.raw;
+            if (v >= 60) {
+              var m = Math.floor(v / 60);
+              var s = v % 60;
+              return v + 's (' + m + 'm ' + s + 's)';
+            }
+            return v + 's';
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        title: { display: true, text: 'Seconds', font: { size: 11 } },
+        ticks: {
+          callback: function(v) {
+            if (v >= 60) return Math.floor(v/60) + 'm';
+            return v + 's';
+          }
+        }
+      },
+      y: { ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+// === PAGE SWITCHING ===
+function switchPage(page) {
+  ['ads','noads','combined'].forEach(function(p) {
+    var content = document.getElementById('page-' + p);
+    var nav = document.getElementById('nav-' + p);
+    var sticky = document.getElementById('sticky-' + p);
+    if (content) content.classList.toggle('active', p === page);
+    if (nav) nav.style.display = p === page ? '' : 'none';
+    if (sticky) sticky.style.display = p === page ? '' : 'none';
+  });
+  document.querySelectorAll('.page-tab').forEach(function(t, i) {
+    var pages = ['ads','noads','combined'];
+    t.classList.toggle('active', pages[i] === page);
+  });
+  window.scrollTo(0, 0);
+  setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 100);
+}
+
+// === NO-ADS DAILY DATA ===
+var naDates = ['Feb 01','Feb 02','Feb 03','Feb 04','Feb 05','Feb 06','Feb 07','Feb 08','Feb 09','Feb 10','Feb 11','Feb 12','Feb 13','Feb 14','Feb 15','Feb 16','Feb 17','Feb 18','Feb 19','Feb 20','Feb 21','Feb 22','Feb 23','Feb 24','Feb 25','Feb 26','Feb 27','Feb 28'];
+var naPV = [987,1041,1135,1114,887,862,1103,1168,1270,906,876,952,837,1150,1399,1240,892,1019,924,1296,1955,1664,1635,1503,1393,1455,1115,1118];
+var naSessions = [815,864,952,956,757,756,936,940,1028,783,774,819,725,945,1152,1024,734,850,790,1066,1585,1359,1279,1213,1113,1190,940,945];
+var naMsg = [513,548,661,636,523,533,617,630,660,545,531,549,498,650,705,637,476,550,540,700,977,865,779,734,735,729,595,620];
+var naAI = [434,466,586,564,492,474,502,482,524,468,472,485,466,591,611,562,432,512,483,631,796,611,692,641,614,644,548,555];
+var naSignUp = [125,130,148,157,175,152,160,139,165,156,169,175,155,158,153,124,116,146,128,151,143,147,112,127,120,131,160,170];
+var naWish1 = [122,126,144,149,168,151,158,132,163,152,166,173,154,155,149,148,135,144,127,147,141,145,109,125,115,129,159,161];
+var naWish2 = [76,67,89,82,94,89,84,84,91,97,77,93,88,91,91,67,65,90,73,85,83,89,70,71,60,76,90,91];
+var naW5 = [32,29,40,37,43,35,41,43,43,50,36,31,40,46,43,22,29,49,43,39,37,48,36,39,27,32,38,45];
+var naW10 = [19,19,25,18,23,18,22,25,21,23,18,18,23,32,19,11,14,27,22,21,24,23,21,23,15,13,17,21];
+var naE2E = naPV.map(function(v,i){ return +((naW10[i]/v)*100).toFixed(2); });
+
+// === NO-ADS FUNNEL BARS ===
+var naFunnelData = [
+  {name:'1. Page Viewed (/create)', val:32896, pct:100},
+  {name:'2. brainstorm_session_started', val:27290, pct:82.96},
+  {name:'3. brainstorm_user_message', val:17736, pct:53.91},
+  {name:'4. brainstorm_ai_response', val:15338, pct:46.63},
+  {name:'5. sign_up_modal_viewed', val:8278, pct:25.16},
+  {name:'6. user_sign_up_complete', val:4092, pct:12.44},
+  {name:'7. WishSubmission (1st)', val:4002, pct:12.17},
+  {name:'8. WishSubmission (2nd)', val:2303, pct:7.00},
+  {name:'9. wish_5_milestone', val:1073, pct:3.26},
+  {name:'10. wish_10_milestone', val:575, pct:1.75},
+];
+
+var naColors = ['#3b82f6','#3b82f6','#3b82f6','#3b82f6','#f59e0b','#f97316','#10b981','#f97316','#ef4444','#ef4444'];
+
+var naContainer = document.getElementById('noads-funnel-bars');
+naFunnelData.forEach(function(d,i) {
+  var div = document.createElement('div');
+  div.className = 'funnel-bar-container';
+  div.innerHTML =
+    '<div class="funnel-bar-label">' +
+      '<span class="fname">' + d.name + '</span>' +
+      '<span class="fvals">' + d.val.toLocaleString() + ' (' + d.pct + '%)</span>' +
+    '</div>' +
+    '<div class="funnel-bar-outer">' +
+      '<div class="funnel-bar-inner" style="width:' + Math.max(d.pct, 2) + '%; background:' + naColors[i] + ';">' + d.pct + '%</div>' +
+    '</div>';
+  naContainer.appendChild(div);
+});
+
+// === NO-ADS FUNNEL BAR CHART ===
+new Chart(document.getElementById('noads-funnelBarChart'), {
+  type: 'bar',
+  data: {
+    labels: naFunnelData.map(function(d){ return d.name.replace(/^\d+\.\s*/,''); }),
+    datasets: [{
+      label: 'Users',
+      data: naFunnelData.map(function(d){ return d.val; }),
+      backgroundColor: naColors,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: function(v){ return v.toLocaleString(); } } },
+      x: { ticks: { maxRotation: 45, font: { size: 10 } } }
+    }
+  }
+});
+
+// === NO-ADS DAILY CHARTS ===
+new Chart(document.getElementById('noads-chartPVSessions'), {
+  type: 'line',
+  data: {
+    labels: naDates,
+    datasets: [
+      { label: 'Page Views', data: naPV, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,.1)', fill: true, tension: .3, pointRadius: 2 },
+      { label: 'Sessions', data: naSessions, borderColor: '#8b5cf6', backgroundColor: 'transparent', tension: .3, pointRadius: 2 },
+    ]
+  },
+  options: lineOpts('Users')
+});
+
+new Chart(document.getElementById('noads-chartSignups'), {
+  type: 'line',
+  data: {
+    labels: naDates,
+    datasets: [
+      { label: 'Sign-ups', data: naSignUp, borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,.1)', fill: true, tension: .3, pointRadius: 2 },
+      { label: '1st Wish', data: naWish1, borderColor: '#10b981', backgroundColor: 'transparent', tension: .3, pointRadius: 2 },
+    ]
+  },
+  options: lineOpts('Users')
+});
+
+new Chart(document.getElementById('noads-chartWishes'), {
+  type: 'line',
+  data: {
+    labels: naDates,
+    datasets: [
+      { label: 'Wish 2', data: naWish2, borderColor: '#f59e0b', tension: .3, pointRadius: 2 },
+      { label: 'wish_5', data: naW5, borderColor: '#ef4444', tension: .3, pointRadius: 2 },
+      { label: 'wish_10', data: naW10, borderColor: '#7c3aed', tension: .3, pointRadius: 2 },
+    ]
+  },
+  options: lineOpts('Users')
+});
+
+new Chart(document.getElementById('noads-chartE2E'), {
+  type: 'line',
+  data: {
+    labels: naDates,
+    datasets: [{
+      label: 'E2E %',
+      data: naE2E,
+      borderColor: '#10b981',
+      backgroundColor: 'rgba(16,185,129,.1)',
+      fill: true,
+      tension: .3,
+      pointRadius: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    interaction: { intersect: false, mode: 'index' },
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+    scales: {
+      y: { beginAtZero: true, title: { display: true, text: 'Conversion %', font: { size: 11 } }, ticks: { callback: function(v){ return v+'%'; } } },
+      x: { ticks: { maxRotation: 45, font: { size: 9 } } }
+    }
+  }
+});
+
+// === SOURCE CHARTS ===
+var srcLabels = ['(none)/Direct','Google Organic','Bing','accounts.google.com','Google Display','DuckDuckGo','Yahoo','YouTube','Taboola','Brave'];
+var srcE2Edata = [0.43, 4.27, 5.32, 0.00, 0.00, 3.83, 4.38, 0.00, 0.00, 10.26];
+var srcW10data = [77, 230, 203, 0, 0, 24, 11, 0, 0, 8];
+
+new Chart(document.getElementById('chartSourceE2E'), {
+  type: 'bar',
+  data: {
+    labels: srcLabels,
+    datasets: [{
+      label: 'E2E %',
+      data: srcE2Edata,
+      backgroundColor: srcE2Edata.map(function(v){ return v >= 4.0 ? '#10b981' : v >= 1.0 ? '#f59e0b' : '#ef4444'; }),
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, ticks: { callback: function(v){ return v+'%'; } }, title: { display: true, text: 'E2E %', font: { size: 11 } } },
+      y: { ticks: { font: { size: 10 } } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartSourceW10'), {
+  type: 'bar',
+  data: {
+    labels: srcLabels,
+    datasets: [{
+      label: 'wish_10',
+      data: srcW10data,
+      backgroundColor: srcE2Edata.map(function(v){ return v >= 4.0 ? '#10b981' : v >= 1.0 ? '#f59e0b' : '#ef4444'; }),
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, title: { display: true, text: 'wish_10 Users', font: { size: 11 } } },
+      y: { ticks: { font: { size: 10 } } }
+    }
+  }
+});
+
+// === COMBINED FUNNEL BARS ===
+var combFunnelData = [
+  {name:'1. Page Viewed', val:28998, pct:100},
+  {name:'2. Session Started', val:28403, pct:97.95},
+  {name:'3. User Message', val:24077, pct:83.03},
+  {name:'4. AI Response', val:22670, pct:78.18},
+  {name:'5. Sign-up Modal', val:16301, pct:56.21},
+  {name:'6. Sign-up Complete', val:10616, pct:36.61},
+  {name:'7. 1st Wish', val:10449, pct:36.03},
+  {name:'8. 2nd Wish', val:5729, pct:19.76},
+  {name:'9. 5 Wishes', val:2396, pct:8.26},
+  {name:'10. 10 Wishes', val:1137, pct:3.92},
+];
+
+var combColors = ['#3b82f6','#3b82f6','#3b82f6','#3b82f6','#f59e0b','#f97316','#10b981','#f97316','#ef4444','#ef4444'];
+
+var combContainer = document.getElementById('combined-funnel-bars');
+combFunnelData.forEach(function(d,i) {
+  var div = document.createElement('div');
+  div.className = 'funnel-bar-container';
+  div.innerHTML =
+    '<div class="funnel-bar-label">' +
+      '<span class="fname">' + d.name + '</span>' +
+      '<span class="fvals">' + d.val.toLocaleString() + ' (' + d.pct + '%)</span>' +
+    '</div>' +
+    '<div class="funnel-bar-outer">' +
+      '<div class="funnel-bar-inner" style="width:' + Math.max(d.pct, 2) + '%; background:' + combColors[i] + ';">' + d.pct + '%</div>' +
+    '</div>';
+  combContainer.appendChild(div);
+});
+
+// === COMBINED FUNNEL BAR CHART ===
+new Chart(document.getElementById('combined-funnelBarChart'), {
+  type: 'bar',
+  data: {
+    labels: combFunnelData.map(function(d){ return d.name.replace(/^\d+\.\s*/,''); }),
+    datasets: [{
+      label: 'Users',
+      data: combFunnelData.map(function(d){ return d.val; }),
+      backgroundColor: combColors,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: function(v){ return v.toLocaleString(); } } },
+      x: { ticks: { maxRotation: 45, font: { size: 10 } } }
+    }
+  }
+});
+
+// === SIDEBAR SCROLL TRACKING ===
+function updateActive() {
+  var adsActive = document.getElementById('page-ads').classList.contains('active');
+  var combinedActive = document.getElementById('page-combined').classList.contains('active');
+  var navId = adsActive ? 'nav-ads' : combinedActive ? 'nav-combined' : 'nav-noads';
+  var navEl = document.getElementById(navId);
+  var links = navEl.querySelectorAll('a');
+  var sections = [];
+  links.forEach(function(a) {
+    var id = a.getAttribute('href').replace('#','');
+    var el = document.getElementById(id);
+    if (el) sections.push({id: id, el: el});
+  });
+  var current = '';
+  sections.forEach(function(s) {
+    if (window.scrollY >= s.el.offsetTop - 100) current = s.id;
+  });
+  links.forEach(function(a) {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', updateActive, { passive: true });
+</script>
+
+</body>
+</html>

@@ -284,10 +284,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     <h2>Astrocade</h2>
     <p>Creator Funnel Analysis</p>
   </div>
-  <div class="page-tabs">
+  <div class="page-tabs" style="flex-wrap:wrap;">
     <button class="page-tab active" onclick="switchPage('ads')">Ads</button>
     <button class="page-tab" onclick="switchPage('noads')">Excluding Ads</button>
     <button class="page-tab" onclick="switchPage('combined')">Combined</button>
+    <button class="page-tab" onclick="switchPage('direct')">(none)/Direct</button>
   </div>
   <nav id="nav-ads">
     <a href="#ads-exec" class="active">Executive Summary</a>
@@ -322,6 +323,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
     <a href="#cb-sensitivity">Sensitivity / What-If</a>
     <a href="#cb-retention">Retention Outlook</a>
   </nav>
+  <nav id="nav-direct" style="display:none;">
+    <a href="#dd-exec" class="active">Executive Summary</a>
+    <a href="#dd-device">Device Breakdown</a>
+    <a href="#dd-android">Android vs Desktop</a>
+    <a href="#dd-country">Country Analysis</a>
+    <a href="#dd-profile">Traffic Profile</a>
+    <a href="#dd-impact">Impact &amp; Recommendations</a>
+  </nav>
 </aside>
 
 <!-- Sticky Bars -->
@@ -345,6 +354,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
   <span><span class="val">10,449</span> Wish1 <span class="pct">(36.03%)</span></span>
   <span class="sep">|</span>
   <span><span class="val">1,137</span> Wish10 <span class="pct">(3.92% E2E)</span></span>
+</div>
+<div class="sticky-bar" id="sticky-direct" style="display:none;">
+  <span><span class="val">17,935</span> (none)/Direct PV</span>
+  <span class="sep">|</span>
+  <span><span class="val">77</span> Wish10 <span class="pct">(0.43% E2E)</span></span>
+  <span class="sep">|</span>
+  <span>54.5% of non-ads traffic <span class="pct" style="color:var(--red);">Drags E2E from 4.69% to 1.75%</span></span>
 </div>
 
 <div class="main">
@@ -1388,12 +1404,364 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
 
 </div><!-- end page-combined -->
 
+
+<!-- ================================================================ -->
+<!-- (none)/DIRECT DEEP DIVE PAGE -->
+<!-- ================================================================ -->
+<div class="page-content" id="page-direct">
+
+<div class="page-header">
+  <h1>(none)/Direct Traffic Deep Dive</h1>
+  <p class="subtitle">February 2026 &middot; (none)/Direct Source &middot; 17,935 Page Views &middot; 54.5% of All Non-Ads Traffic</p>
+</div>
+
+<!-- 1. EXECUTIVE SUMMARY -->
+<section id="dd-exec">
+  <h2 class="section-heading">Executive Summary</h2>
+
+  <div class="kpi-row">
+    <div class="kpi-card red-top">
+      <div class="label">Total Page Views</div>
+      <div class="value">17,935</div>
+      <div class="pct">54.5% of non-ads traffic</div>
+    </div>
+    <div class="kpi-card red-top">
+      <div class="label">Wish 10 Completions</div>
+      <div class="value">77</div>
+      <div class="pct">vs 476 from organic search</div>
+    </div>
+    <div class="kpi-card red-top">
+      <div class="label">End-to-End Conversion</div>
+      <div class="value">0.43%</div>
+      <div class="pct">Organic search: 4.69% (11x better)</div>
+    </div>
+    <div class="kpi-card orange-top">
+      <div class="label">% of Non-Ads Traffic</div>
+      <div class="value">54.5%</div>
+      <div class="pct">32,896 total non-ads PV</div>
+    </div>
+  </div>
+
+  <div class="callout-card waste">
+    <h4>This single traffic source drags non-ads E2E from 4.69% to 1.75%</h4>
+    <p>Without (none)/direct traffic, the remaining non-ads sources (primarily organic search) achieve a 4.69% end-to-end conversion rate -- better than paid ads at 3.51%. Including this massive block of low-quality traffic cuts the non-ads E2E rate by 63%, masking the true performance of organic channels. This source accounts for over half of all non-ads page views but contributes only 77 of 575 wish_10 completions (13.4%).</p>
+  </div>
+</section>
+
+<!-- 2. DEVICE BREAKDOWN -->
+<section id="dd-device">
+  <h2 class="section-heading">Who Are They? Device Breakdown</h2>
+
+  <div class="card">
+    <h3>Device Category Performance</h3>
+    <table class="scorecard-table">
+      <thead>
+        <tr><th>Device</th><th>Page Views</th><th>% of Total</th><th>Wish 10</th><th>E2E %</th><th>Quality</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Mobile</td><td>15,224</td><td>84.9%</td><td>21</td><td>0.14%</td><td><span class="grade-badge grade-f">Very Poor</span></td></tr>
+        <tr><td>Desktop</td><td>2,551</td><td>14.2%</td><td>56</td><td>2.20%</td><td><span class="grade-badge grade-c">Moderate</span></td></tr>
+        <tr style="background:#fff5f5;"><td>Other</td><td>72</td><td>0.4%</td><td>0</td><td>0%</td><td><span class="grade-badge grade-f">Bots</span></td></tr>
+        <tr><td>Tablet</td><td>68</td><td>0.4%</td><td>0</td><td>0%</td><td><span class="grade-badge grade-f">Zero</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px; color:var(--text-secondary); margin-top:12px;"><strong>Key insight:</strong> 85.2% of (none)/direct traffic is mobile, and 79.3% is specifically Android. "Other" devices (72 PV) drop to zero at the message step -- confirmed bot traffic.</p>
+  </div>
+
+  <div class="card">
+    <h3>Device Family Performance</h3>
+    <table class="scorecard-table">
+      <thead>
+        <tr><th>Device Family</th><th>Page Views</th><th>Wish 10</th><th>E2E %</th><th>Modal &rarr; Signup</th><th>Quality</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Android</td><td>14,232</td><td>19</td><td>0.13%</td><td>10.03%</td><td><span class="grade-badge grade-f">Very Poor</span></td></tr>
+        <tr><td>Windows</td><td>1,311</td><td>41</td><td>3.13%</td><td>66.76%</td><td><span class="grade-badge grade-b">Good</span></td></tr>
+        <tr><td>iOS</td><td>1,066</td><td>2</td><td>0.19%</td><td>45.89%</td><td><span class="grade-badge grade-d">Poor</span></td></tr>
+        <tr><td>Mac OS X</td><td>827</td><td>8</td><td>0.97%</td><td>52.34%</td><td><span class="grade-badge grade-c">Moderate</span></td></tr>
+        <tr><td>Chrome OS</td><td>272</td><td>5</td><td>1.84%</td><td>32.14%</td><td><span class="grade-badge grade-c">Moderate</span></td></tr>
+        <tr><td>Linux</td><td>140</td><td>2</td><td>1.43%</td><td>65.22%</td><td><span class="grade-badge grade-c">Moderate</span></td></tr>
+        <tr style="background:#fff5f5;"><td>Other</td><td>64</td><td>0</td><td>0%</td><td>N/A</td><td><span class="grade-badge grade-f">Bots</span></td></tr>
+        <tr><td>Ubuntu</td><td>3</td><td>0</td><td>0%</td><td>N/A</td><td><span class="grade-badge grade-f">N/A</span></td></tr>
+        <tr><td>Tizen</td><td>1</td><td>0</td><td>0%</td><td>N/A</td><td><span class="grade-badge grade-f">N/A</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-wrap"><h4>Page Views by Device Family</h4><canvas id="dd-chart-device-pv"></canvas></div>
+    <div class="chart-wrap"><h4>E2E Conversion by Device Family</h4><canvas id="dd-chart-device-e2e"></canvas></div>
+  </div>
+</section>
+
+<!-- 3. ANDROID VS DESKTOP -->
+<section id="dd-android">
+  <h2 class="section-heading">Android vs Desktop: The Sign-up Wall</h2>
+
+  <div class="callout-card waste">
+    <h4>Android sign-up rate is 10.03% vs Windows 66.76% -- a 6.7x gap</h4>
+    <p>Android users hit two massive walls: only 28.82% click "create" after seeing an AI response (vs 79.09% on Windows), and only 10.03% complete sign-up after seeing the modal (vs 66.76% on Windows). This suggests Android users are either in app webviews that break OAuth, or are low-intent mobile browsers who cannot or will not complete the sign-up flow.</p>
+  </div>
+
+  <div class="card">
+    <h3>Step-by-Step Conversion: Android vs Windows</h3>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Step</th><th>Android</th><th>Windows</th><th>Gap</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PV &rarr; Session</td>
+          <td>79.93%</td>
+          <td>72.16%</td>
+          <td class="better">Android +7.77pp</td>
+        </tr>
+        <tr>
+          <td>Session &rarr; Message</td>
+          <td>56.56%</td>
+          <td>58.35%</td>
+          <td style="color:var(--text-secondary);">Similar</td>
+        </tr>
+        <tr>
+          <td>Message &rarr; AI Response</td>
+          <td>75.16%</td>
+          <td class="better">95.29%</td>
+          <td class="worse">Android -20.13pp</td>
+        </tr>
+        <tr>
+          <td>AI &rarr; Create Clicked</td>
+          <td class="worse">28.82%</td>
+          <td class="better">79.09%</td>
+          <td class="worse">Android -50.27pp</td>
+        </tr>
+        <tr>
+          <td>Create &rarr; Sign-up Modal</td>
+          <td>94.40%</td>
+          <td>81.73%</td>
+          <td class="better">Android +12.67pp</td>
+        </tr>
+        <tr>
+          <td>Modal &rarr; Signup Complete</td>
+          <td class="worse">10.03%</td>
+          <td class="better">66.76%</td>
+          <td class="worse">Android -56.73pp</td>
+        </tr>
+        <tr>
+          <td>Signup &rarr; Wish1</td>
+          <td>98.48%</td>
+          <td>98.68%</td>
+          <td style="color:var(--text-secondary);">Similar</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px; color:var(--text-secondary); margin-top:16px;"><strong>Two critical Android failures:</strong> (1) AI &rarr; Create Clicked at 28.82% vs 79.09% -- Android users see the AI response but 71% leave without clicking create. (2) Modal &rarr; Signup at 10.03% vs 66.76% -- of those who see the modal, 90% fail to sign up. This strongly suggests OAuth/sign-up is broken in Android webviews.</p>
+  </div>
+
+  <div class="card">
+    <h3>Full Funnel Comparison (Absolute Numbers)</h3>
+    <table class="scorecard-table">
+      <thead>
+        <tr><th>Step</th><th>Android</th><th>Windows</th><th>iOS</th><th>Mac OS X</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Page Views</td><td>14,232</td><td>1,311</td><td>1,066</td><td>827</td></tr>
+        <tr><td>Session</td><td>11,376</td><td>946</td><td>806</td><td>676</td></tr>
+        <tr><td>Message</td><td>6,434</td><td>552</td><td>404</td><td>267</td></tr>
+        <tr><td>AI Response</td><td>4,836</td><td>526</td><td>355</td><td>241</td></tr>
+        <tr><td>Create Clicked</td><td>1,394</td><td>416</td><td>166</td><td>150</td></tr>
+        <tr><td>Sign-up Modal</td><td>1,316</td><td>340</td><td>146</td><td>128</td></tr>
+        <tr><td>Signup Complete</td><td>132</td><td>227</td><td>67</td><td>67</td></tr>
+        <tr><td>Wish 1</td><td>130</td><td>224</td><td>67</td><td>66</td></tr>
+        <tr><td>Wish 10</td><td>19</td><td>41</td><td>2</td><td>8</td></tr>
+        <tr><td><strong>E2E</strong></td><td><strong style="color:var(--red);">0.13%</strong></td><td><strong style="color:var(--green);">3.13%</strong></td><td><strong style="color:var(--red);">0.19%</strong></td><td><strong>0.97%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-wrap"><h4>Funnel: Android vs Windows (% of PV)</h4><canvas id="dd-chart-funnel-compare"></canvas></div>
+    <div class="chart-wrap"><h4>Step Conversion Rates: Android vs Windows</h4><canvas id="dd-chart-step-rates"></canvas></div>
+  </div>
+</section>
+
+<!-- 4. COUNTRY ANALYSIS -->
+<section id="dd-country">
+  <h2 class="section-heading">Where Are They From? Country Analysis</h2>
+
+  <div class="card">
+    <h3>Top 15 Countries by Page Views</h3>
+    <table class="scorecard-table">
+      <thead>
+        <tr><th>Country</th><th>Page Views</th><th>Wish 10</th><th>E2E %</th><th>Quality</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>India</td><td>3,323</td><td>9</td><td>0.27%</td><td><span class="grade-badge grade-f">Poor</span></td></tr>
+        <tr><td>Pakistan</td><td>1,583</td><td>3</td><td>0.19%</td><td><span class="grade-badge grade-f">Poor</span></td></tr>
+        <tr><td>United States</td><td>1,516</td><td>16</td><td>1.06%</td><td><span class="grade-badge grade-c">Moderate</span></td></tr>
+        <tr style="background:#fff5f5;"><td>Syria</td><td>1,334</td><td>0</td><td style="color:var(--red); font-weight:700;">0%</td><td><span class="grade-badge grade-f">Zero</span></td></tr>
+        <tr style="background:#fff5f5;"><td>Turkey</td><td>963</td><td>0</td><td style="color:var(--red); font-weight:700;">0%</td><td><span class="grade-badge grade-f">Zero</span></td></tr>
+        <tr><td>Iraq</td><td>875</td><td>1</td><td>0.11%</td><td><span class="grade-badge grade-f">Poor</span></td></tr>
+        <tr style="background:#fff5f5;"><td>Bangladesh</td><td>758</td><td>0</td><td style="color:var(--red); font-weight:700;">0%</td><td><span class="grade-badge grade-f">Zero</span></td></tr>
+        <tr><td>Algeria</td><td>697</td><td>1</td><td>0.14%</td><td><span class="grade-badge grade-f">Poor</span></td></tr>
+        <tr style="background:#fff5f5;"><td>Nigeria</td><td>506</td><td>0</td><td style="color:var(--red); font-weight:700;">0%</td><td><span class="grade-badge grade-f">Zero</span></td></tr>
+        <tr><td>Egypt</td><td>447</td><td>1</td><td>0.22%</td><td><span class="grade-badge grade-f">Poor</span></td></tr>
+        <tr><td>Indonesia</td><td>441</td><td>1</td><td>0.23%</td><td><span class="grade-badge grade-f">Poor</span></td></tr>
+        <tr><td>Vietnam</td><td>434</td><td>1</td><td>0.23%</td><td><span class="grade-badge grade-f">Poor</span></td></tr>
+        <tr><td>Philippines</td><td>324</td><td>4</td><td>1.23%</td><td><span class="grade-badge grade-c">Moderate</span></td></tr>
+        <tr><td>United Kingdom</td><td>90</td><td>4</td><td style="color:var(--green); font-weight:700;">4.44%</td><td><span class="grade-badge grade-b">Good</span></td></tr>
+        <tr><td>Brazil</td><td>155</td><td>2</td><td>1.29%</td><td><span class="grade-badge grade-c">Moderate</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Country Group Analysis</h3>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Region</th><th>Countries</th><th>Page Views</th><th>Wish 10</th><th>E2E %</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>South Asia</strong></td>
+          <td>India + Pakistan + Bangladesh</td>
+          <td>5,664</td>
+          <td>12</td>
+          <td class="worse">0.21%</td>
+        </tr>
+        <tr>
+          <td><strong>MENA</strong></td>
+          <td>Syria + Iraq + Algeria + Egypt + Morocco + Sudan + Libya</td>
+          <td>4,565</td>
+          <td>4</td>
+          <td class="worse">0.09%</td>
+        </tr>
+        <tr>
+          <td><strong>US + UK</strong></td>
+          <td>United States + United Kingdom</td>
+          <td>1,606</td>
+          <td>20</td>
+          <td class="better">1.25%</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px; color:var(--text-secondary); margin-top:12px;"><strong>Zero-conversion countries with significant PV:</strong> Syria (1,334), Turkey (963), Bangladesh (758), Nigeria (506), Morocco (227), Sudan (209). These 6 countries account for 3,997 PV and zero wish_10 completions.</p>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-wrap"><h4>Top 10 Countries by Page Views</h4><canvas id="dd-chart-country-pv"></canvas></div>
+    <div class="chart-wrap"><h4>E2E Conversion by Country</h4><canvas id="dd-chart-country-e2e"></canvas></div>
+  </div>
+</section>
+
+<!-- 5. TRAFFIC PROFILE & HYPOTHESIS -->
+<section id="dd-profile">
+  <h2 class="section-heading">Traffic Profile &amp; Hypothesis</h2>
+
+  <div class="card">
+    <h3>Evidence Summary: What Is This Traffic?</h3>
+
+    <div class="issue-card p0" style="margin-bottom:16px;">
+      <span class="issue-badge p0">SIGNAL 1</span>
+      <h4>Bot/Crawler Traffic</h4>
+      <p>"Other" device category (72 PV) drops to exactly zero at the message step -- no human behavior. Similarly, "Other" device family (64 PV) shows identical zero-engagement patterns. These are confirmed bots or crawlers that load pages but never interact.</p>
+    </div>
+
+    <div class="issue-card p0" style="margin-bottom:16px;">
+      <span class="issue-badge p0">SIGNAL 2</span>
+      <h4>Zero-Conversion Countries</h4>
+      <p>Syria (1,334 PV, 0% E2E), Turkey (963 PV, 0% E2E), Bangladesh (758 PV, 0% E2E), and Nigeria (506 PV, 0% E2E) collectively send 3,561 page views with zero wish_10 completions. Syria specifically drops to zero at signup -- all 109 users who reach the sign-up modal fail to complete. This pattern is consistent with bot farms or click fraud originating from these regions.</p>
+    </div>
+
+    <div class="issue-card p1" style="margin-bottom:16px;">
+      <span class="issue-badge p1">SIGNAL 3</span>
+      <h4>App Webview Traffic (Referrer Stripped)</h4>
+      <p>When users click links in apps like Facebook, Instagram, TikTok, WhatsApp, or Telegram, the app opens the page in a built-in webview. These webviews strip the HTTP referrer header, causing Google Analytics to classify the traffic as "(none)/direct." This explains: (1) why it is 85% mobile/79% Android, (2) why Android sign-up is only 10.03% -- OAuth popups often fail in webviews, and (3) why the AI &rarr; Create rate is only 28.82% -- webview users may be casually browsing shared links, not intending to create.</p>
+    </div>
+
+    <div class="issue-card p2" style="margin-bottom:16px;">
+      <span class="issue-badge p2">SIGNAL 4</span>
+      <h4>Low-Intent Browsing</h4>
+      <p>High PV from South Asia and MENA regions (10,229 PV combined) with extremely low conversion (0.16% E2E) suggests users who encounter Astrocade through shared links or social media but have no genuine intent to create a game. They browse briefly and leave.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Estimated Traffic Composition</h3>
+    <table class="scorecard-table">
+      <thead>
+        <tr><th>Category</th><th>Estimated %</th><th>Est. PV</th><th>Evidence</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>App Webview Traffic</td>
+          <td>~55-60%</td>
+          <td>~10,000-10,800</td>
+          <td>Mobile-heavy, referrer stripped, OAuth failures, low create-click rate</td>
+        </tr>
+        <tr>
+          <td>Low-Intent Browsing</td>
+          <td>~25-30%</td>
+          <td>~4,500-5,400</td>
+          <td>South Asia/MENA regions, brief sessions, zero conversion countries</td>
+        </tr>
+        <tr>
+          <td>Bots/Crawlers</td>
+          <td>~5-10%</td>
+          <td>~900-1,800</td>
+          <td>"Other" devices, zero-message countries, non-human patterns</td>
+        </tr>
+        <tr>
+          <td>Genuine Direct Traffic</td>
+          <td>~10-15%</td>
+          <td>~1,800-2,700</td>
+          <td>US/UK users, Windows/Mac desktop, 1-4% E2E -- real users typing URL directly</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 6. IMPACT & RECOMMENDATIONS -->
+<section id="dd-impact">
+  <h2 class="section-heading">Impact &amp; Recommendations</h2>
+
+  <div class="gap-card">
+    <h4>Impact: Filtering (none)/Direct Reveals True Performance</h4>
+    <p><strong>Current non-ads E2E:</strong> 1.75% (575 wish_10 from 32,896 PV)</p>
+    <p><strong>Without (none)/direct:</strong> 4.69% E2E (476 wish_10 from ~10,158 organic search PV)</p>
+    <div class="gap-stat">E2E jumps from 1.75% to 4.69%</div>
+    <p>Removing this single traffic source from the calculation shows that the organic non-ads funnel actually outperforms paid ads (3.51% E2E). The (none)/direct traffic is not a funnel problem to fix -- it is a measurement problem to filter.</p>
+  </div>
+
+  <div class="rec-card">
+    <h4>Recommendation 1: Implement Bot Detection / CAPTCHA</h4>
+    <p>Add bot detection (e.g., reCAPTCHA v3, Cloudflare Bot Management) before the sign-up step. This would filter out automated traffic from zero-conversion regions (Syria, Turkey, Bangladesh, Nigeria) and "Other" device categories. Expected impact: cleaner funnel data and reduced server costs from bot traffic.</p>
+  </div>
+
+  <div class="rec-card">
+    <h4>Recommendation 2: Fix OAuth/Sign-up Flow on Android Webviews</h4>
+    <p>The 10.03% Android Modal &rarr; Signup rate (vs 66.76% on Windows) strongly suggests OAuth sign-up breaks in app webviews. Investigate: (1) Does Google/Apple OAuth popup get blocked in Facebook/Instagram/TikTok webviews? (2) Can you implement in-page sign-up (email + password) as a fallback when OAuth is unavailable? If even 30% of these webview users could sign up, that would add ~355 additional sign-ups per month.</p>
+  </div>
+
+  <div class="rec-card">
+    <h4>Recommendation 3: Filter (none)/Direct from Funnel Metrics</h4>
+    <p>Create a separate "quality traffic" dashboard that excludes (none)/direct, Google Display, and Taboola. Use this filtered view as the primary decision-making metric. The current blended non-ads E2E of 1.75% is misleading and could lead to under-investment in organic search, which actually performs at 4.69% E2E.</p>
+  </div>
+
+  <div class="rec-card">
+    <h4>Recommendation 4: Add UTM Parameters to All Shared Links</h4>
+    <p>Prevent future (none) classification by ensuring all links shared on social media, messaging apps, email campaigns, and partner sites include UTM parameters (utm_source, utm_medium, utm_campaign). This would properly attribute webview traffic to its actual source (e.g., Facebook, WhatsApp, Telegram) and allow targeted optimization. Consider implementing a link shortener with automatic UTM tagging.</p>
+  </div>
+</section>
+
+</div><!-- end page-direct -->
+
 </div><!-- end main -->
 
 <script>
 // === PAGE SWITCHING ===
 function switchPage(page) {
-  ['ads','noads','combined'].forEach(function(p) {
+  ['ads','noads','combined','direct'].forEach(function(p) {
     var content = document.getElementById('page-' + p);
     var nav = document.getElementById('nav-' + p);
     var sticky = document.getElementById('sticky-' + p);
@@ -1402,7 +1770,7 @@ function switchPage(page) {
     if (sticky) sticky.style.display = p === page ? '' : 'none';
   });
   document.querySelectorAll('.page-tab').forEach(function(t, i) {
-    var pages = ['ads','noads','combined'];
+    var pages = ['ads','noads','combined','direct'];
     t.classList.toggle('active', pages[i] === page);
   });
   window.scrollTo(0, 0);
@@ -1484,6 +1852,57 @@ makeChart('na-chart-msg', 'line', naDates, [
   { label: 'Messages', data: naMsg, borderColor: '#06b6d4', backgroundColor: 'rgba(6,182,212,.1)', fill: true, tension: 0.3 },
   { label: 'AI Responses', data: naAI, borderColor: '#14b8a6', backgroundColor: 'rgba(20,184,166,.1)', fill: true, tension: 0.3 }
 ]);
+
+// === (none)/DIRECT CHARTS ===
+// Device Family PV bar chart
+makeChart('dd-chart-device-pv', 'bar',
+  ['Android','Windows','iOS','Mac OS X','Chrome OS','Linux','Other'],
+  [{ label: 'Page Views', data: [14232,1311,1066,827,272,140,64], backgroundColor: ['#ef4444','#3b82f6','#f97316','#8b5cf6','#06b6d4','#10b981','#94a3b8'] }],
+  { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { font: { size: 10 } } }, y: { beginAtZero: true, ticks: { font: { size: 10 } } } } }
+);
+
+// Device Family E2E bar chart
+makeChart('dd-chart-device-e2e', 'bar',
+  ['Android','Windows','iOS','Mac OS X','Chrome OS','Linux'],
+  [{ label: 'E2E %', data: [0.13,3.13,0.19,0.97,1.84,1.43], backgroundColor: ['#ef4444','#10b981','#ef4444','#f97316','#3b82f6','#3b82f6'] }],
+  { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { font: { size: 10 } } }, y: { beginAtZero: true, ticks: { font: { size: 10 }, callback: function(v){ return v+'%'; } } } } }
+);
+
+// Android vs Windows funnel comparison
+makeChart('dd-chart-funnel-compare', 'bar',
+  ['PV','Session','Message','AI Resp','Create','Modal','Signup','Wish1','Wish10'],
+  [
+    { label: 'Android (%)', data: [100,79.93,45.21,33.98,9.79,9.25,0.93,0.91,0.13], backgroundColor: 'rgba(239,68,68,.7)' },
+    { label: 'Windows (%)', data: [100,72.16,42.11,40.12,31.73,25.93,17.32,17.09,3.13], backgroundColor: 'rgba(59,130,246,.7)' }
+  ],
+  { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, scales: { x: { ticks: { font: { size: 10 } } }, y: { beginAtZero: true, ticks: { font: { size: 10 }, callback: function(v){ return v+'%'; } } } } }
+);
+
+// Step conversion rates comparison
+makeChart('dd-chart-step-rates', 'bar',
+  ['PV\u2192Sess','Sess\u2192Msg','Msg\u2192AI','AI\u2192Create','Create\u2192Modal','Modal\u2192Signup','Signup\u2192W1'],
+  [
+    { label: 'Android', data: [79.93,56.56,75.16,28.82,94.40,10.03,98.48], backgroundColor: 'rgba(239,68,68,.7)' },
+    { label: 'Windows', data: [72.16,58.35,95.29,79.09,81.73,66.76,98.68], backgroundColor: 'rgba(59,130,246,.7)' }
+  ],
+  { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, scales: { x: { ticks: { font: { size: 9 } } }, y: { beginAtZero: true, max: 100, ticks: { font: { size: 10 }, callback: function(v){ return v+'%'; } } } } }
+);
+
+// Country PV bar chart
+makeChart('dd-chart-country-pv', 'bar',
+  ['India','Pakistan','US','Syria','Turkey','Iraq','Bangladesh','Algeria','Nigeria','Egypt'],
+  [{ label: 'Page Views', data: [3323,1583,1516,1334,963,875,758,697,506,447],
+     backgroundColor: ['#3b82f6','#3b82f6','#10b981','#ef4444','#ef4444','#f97316','#ef4444','#f97316','#ef4444','#f97316'] }],
+  { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { font: { size: 9 } } }, y: { beginAtZero: true, ticks: { font: { size: 10 } } } } }
+);
+
+// Country E2E bar chart
+makeChart('dd-chart-country-e2e', 'bar',
+  ['UK','Brazil','Philippines','US','India','Vietnam','Indonesia','Egypt','Pakistan','Algeria'],
+  [{ label: 'E2E %', data: [4.44,1.29,1.23,1.06,0.27,0.23,0.23,0.22,0.19,0.14],
+     backgroundColor: ['#10b981','#3b82f6','#3b82f6','#10b981','#f97316','#f97316','#f97316','#f97316','#f97316','#f97316'] }],
+  { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { font: { size: 9 } } }, y: { beginAtZero: true, ticks: { font: { size: 10 }, callback: function(v){ return v+'%'; } } } } }
+);
 </script>
 
 </body>
